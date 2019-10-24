@@ -1,7 +1,6 @@
 package daikon
 
-import daikon.Method.GET
-import daikon.Method.POST
+import daikon.Method.*
 import javax.servlet.http.HttpServlet
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -18,12 +17,17 @@ class RouteServlet(private val method: Method, private val action: (Request, Res
 
     private fun execute(actualMethod: Method, request: HttpServletRequest, response: HttpServletResponse) {
         when(method){
-            actualMethod -> action.invoke(HttpRequest(request), HttpResponse(response))
-            else -> notAllowed(response)
+            actualMethod -> doAction(request, response)
+            ANY -> doAction(request, response)
+            else -> notAllow(response)
         }
     }
 
-    private fun notAllowed(response: HttpServletResponse) {
+    private fun doAction(request: HttpServletRequest, response: HttpServletResponse) {
+        action.invoke(HttpRequest(request), HttpResponse(response))
+    }
+
+    private fun notAllow(response: HttpServletResponse) {
         response.status = 405
     }
 }

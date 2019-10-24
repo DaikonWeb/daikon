@@ -26,6 +26,16 @@ class HttpMethodsTest {
     }
 
     @Test
+    fun `do any`() {
+        HttpServer()
+            .any("/") { _, res -> res.write("Hello") }
+            .start().use {
+                assertThat(get("http://localhost:4545/").text).isEqualTo("Hello")
+                assertThat(post("http://localhost:4545/").text).isEqualTo("Hello")
+            }
+    }
+
+    @Test
     fun `not allowed method`() {
         HttpServer()
             .get("/") { _, _ -> }

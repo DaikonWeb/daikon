@@ -1,7 +1,6 @@
 package daikon
 
-import daikon.Method.GET
-import daikon.Method.POST
+import daikon.Method.*
 import org.eclipse.jetty.server.Server
 import org.eclipse.jetty.servlet.ServletContextHandler
 import org.eclipse.jetty.servlet.ServletHolder
@@ -30,6 +29,11 @@ class HttpServer : AutoCloseable {
 
     fun post(path: String, route: (Request, Response) -> Unit): HttpServer {
         add(POST, path, route)
+        return this
+    }
+
+    fun any(path: String, route: (Request, Response) -> Unit): HttpServer {
+        add(ANY, path, route)
         return this
     }
 
