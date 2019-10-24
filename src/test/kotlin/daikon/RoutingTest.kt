@@ -16,4 +16,15 @@ class RoutingTest {
                 assertThat(get("http://localhost:4545/bar").text).isEqualTo("Bye bar")
             }
     }
+
+    @Test
+    fun `route starts with`() {
+        HttpServer()
+            .get("/*") { _, res -> res.write("Hello foo") }
+            .get("/bar/*") { _, res -> res.write("Bye bar") }
+            .start().use {
+                assertThat(get("http://localhost:4545/ba").text).isEqualTo("Hello foo")
+                assertThat(get("http://localhost:4545/bar").text).isEqualTo("Bye bar")
+            }
+    }
 }
