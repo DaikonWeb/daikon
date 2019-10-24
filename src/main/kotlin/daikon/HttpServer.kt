@@ -25,5 +25,10 @@ class HttpServer : AutoCloseable {
         handler.addServlet(ServletHolder(RouteServlet(route)), path)
         return this
     }
+
+    fun post(path: String, route: (Request, Response) -> Unit): HttpServer {
+        handler.addServlet(ServletHolder(RouteServlet(route)), path)
+        return this
+    }
 }
 
