@@ -24,4 +24,13 @@ class HttpMethodsTest {
                 assertThat(post("http://localhost:4545/").text).isEqualTo("Hello")
             }
     }
+
+    @Test
+    fun `not allowed method`() {
+        HttpServer()
+            .get("/") { _, _ -> }
+            .start().use {
+                assertThat(post("http://localhost:4545/").statusCode).isEqualTo(405)
+            }
+    }
 }
