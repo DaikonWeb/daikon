@@ -1,7 +1,7 @@
 package daikon
 
+import daikon.Localhost.get
 import org.junit.jupiter.api.Test
-import khttp.get
 import org.assertj.core.api.Assertions.assertThat
 
 class HttpServerTest {
@@ -11,7 +11,7 @@ class HttpServerTest {
         HttpServer()
             .get("/") { _, _ -> }
             .start().use {
-                val response = get("http://localhost:4545/")
+                val response = get("/")
                 assertThat(response.statusCode).isEqualTo(200)
             }
     }

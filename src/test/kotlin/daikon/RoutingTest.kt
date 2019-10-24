@@ -1,6 +1,7 @@
 package daikon
 
-import khttp.get
+
+import daikon.Localhost.get
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -12,8 +13,8 @@ class RoutingTest {
             .get("/foo") { _, res -> res.write("Hello foo") }
             .get("/bar") { _, res -> res.write("Bye bar") }
             .start().use {
-                assertThat(get("http://localhost:4545/foo").text).isEqualTo("Hello foo")
-                assertThat(get("http://localhost:4545/bar").text).isEqualTo("Bye bar")
+                assertThat(get("/foo").text).isEqualTo("Hello foo")
+                assertThat(get("/bar").text).isEqualTo("Bye bar")
             }
     }
 
@@ -23,8 +24,8 @@ class RoutingTest {
             .get("/*") { _, res -> res.write("Hello foo") }
             .get("/bar/*") { _, res -> res.write("Bye bar") }
             .start().use {
-                assertThat(get("http://localhost:4545/ba").text).isEqualTo("Hello foo")
-                assertThat(get("http://localhost:4545/bar").text).isEqualTo("Bye bar")
+                assertThat(get("/ba").text).isEqualTo("Hello foo")
+                assertThat(get("/bar").text).isEqualTo("Bye bar")
             }
     }
 }
