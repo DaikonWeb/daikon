@@ -2,8 +2,10 @@ package daikon
 
 import daikon.Method.*
 import org.eclipse.jetty.server.Server
+import org.eclipse.jetty.servlet.DefaultServlet
 import org.eclipse.jetty.servlet.ServletContextHandler
 import org.eclipse.jetty.servlet.ServletHolder
+import org.eclipse.jetty.util.resource.Resource
 
 
 class HttpServer : AutoCloseable {
@@ -39,6 +41,12 @@ class HttpServer : AutoCloseable {
 
     private fun add(method: Method, path: String, route: (Request, Response) -> Unit) {
         handler.addServlet(ServletHolder(RouteServlet(method, route)), path)
+    }
+
+    fun assets(path: String): HttpServer {
+        handler.addServlet(ServletHolder(DefaultServlet()), path)
+        handler.baseResource = Resource.newResource(HttpServer::class.java.getResource("/assets/"))
+        return this
     }
 }
 

@@ -28,4 +28,13 @@ class RoutingTest {
                 assertThat(get("/bar").text).isEqualTo("Bye bar")
             }
     }
+
+    @Test
+    fun `serve static files`() {
+        HttpServer()
+            .assets("/")
+            .start().use {
+                assertThat(get("/style.css").text).isEqualTo("body {}")
+            }
+    }
 }
