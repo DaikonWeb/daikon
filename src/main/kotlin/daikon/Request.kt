@@ -1,3 +1,5 @@
 package daikon
 
-interface Request
+interface Request {
+    fun param(name: String): String
+}
