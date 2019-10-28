@@ -44,7 +44,8 @@ class HttpServer : AutoCloseable {
     }
 
     fun assets(path: String): HttpServer {
-        handler.addServlet(ServletHolder(DefaultServlet()), path)
+        val servletHolder = ServletHolder(DefaultServlet())
+        handler.addServlet(servletHolder, path)
         handler.baseResource = Resource.newResource(HttpServer::class.java.getResource("/assets/"))
         return this
     }

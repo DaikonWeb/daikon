@@ -30,11 +30,31 @@ class RoutingTest {
     }
 
     @Test
-    fun `serve static files`() {
+    fun `serve static files on root`() {
         HttpServer()
             .assets("/")
             .start().use {
                 assertThat(get("/style.css").text).isEqualTo("body {}")
+            }
+    }
+
+    @Test
+    fun `serve static files`() {
+        HttpServer()
+            .assets("/*")
+            .start().use {
+                assertThat(get("/foo/style.css").text).isEqualTo("body {}")
+            }
+    }
+
+    @Test
+    fun `mix of static file and dynamic route`() {
+        HttpServer()
+            .get("/foo/2") {_, res -> res.write("Hello")}
+            .assets("/foo/*")
+            .start().use {
+                assertThat(get("/foo/style.css").text).isEqualTo("body {}")
+                assertThat(get("/foo/2").text).isEqualTo("Hello")
             }
     }
 }
