@@ -20,8 +20,11 @@ class RequestTest {
     fun `post data`() {
         HttpServer()
             .post("/*") { req, res -> res.write("hello ${req.param("name")}") }
+            .start()
             .use {
-                assertThat(post("/", data = mapOf("name" to "Bob")).text).isEqualTo("hello Bob")
+                assertThat(post("/cane",
+                    data = mapOf("name" to "Bob"),
+                    headers=mapOf("Content-Type" to "application/x-www-form-urlencoded")).text).isEqualTo("hello Bob")
             }
     }
 }
