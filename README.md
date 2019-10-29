@@ -6,6 +6,23 @@ The main goals are:
 * Build a simple web application in less then 5 minutes
 * Can run multiple instances of HTTP server at the same time
 
+## How to add Daikon to your project
+
+### Gradle
+```
+implementation "daikon:daikon:0.1"
+```
+
+### Maven
+```
+<dependency>
+  <groupId>daikon</groupId>
+  <artifactId>daikon</artifactId>
+  <version>0.1</version>
+</dependency>
+```
+
+
 ## Getting Started
 ```
 HttpServer()
