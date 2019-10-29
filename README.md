@@ -9,12 +9,12 @@ The main goals are:
 ## Getting Started
 ```
 HttpServer()
-        .get("/foo") { _, res -> res.write("Hello foo") }
-        .post("/bar") { _, res -> res.write("Bye bar") }
-        .start().use {
-            assertThat(get("/foo").text).isEqualTo("Hello foo")
-            assertThat(post("/bar").text).isEqualTo("Bye bar")
-        }
+    .get("/foo") { _, res -> res.write("Hello foo") }
+    .post("/bar") { _, res -> res.write("Bye bar") }
+    .start().use {
+        assertThat(get("/foo").text).isEqualTo("Hello foo")
+        assertThat(post("/bar").text).isEqualTo("Bye bar")
+    }
 ```
 
 ## Authors
