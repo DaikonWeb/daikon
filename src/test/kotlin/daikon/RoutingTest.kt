@@ -48,13 +48,22 @@ class RoutingTest {
     }
 
     @Test
-    fun `mix of static file and dynamic route`() {
+    fun `mix of static file and dynamic routes`() {
         HttpServer()
             .get("/foo/2") {_, res -> res.write("Hello")}
             .assets("/foo/*")
             .start().use {
                 assertThat(get("/foo/style.css").text).isEqualTo("body {}")
                 assertThat(get("/foo/2").text).isEqualTo("Hello")
+            }
+    }
+
+    @Test
+    fun `custom port`() {
+        HttpServer(4546)
+            .get("/*") {_, res -> res.write("Hello")}
+            .start().use {
+                assertThat(khttp.get("http://localhost:4546/").text).isEqualTo("Hello")
             }
     }
 }

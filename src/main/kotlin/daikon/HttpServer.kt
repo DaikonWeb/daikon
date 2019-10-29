@@ -8,13 +8,13 @@ import org.eclipse.jetty.servlet.ServletHolder
 import org.eclipse.jetty.util.resource.Resource
 
 
-class HttpServer : AutoCloseable {
+class HttpServer(private val port: Int = 4545) : AutoCloseable {
 
     private lateinit var server: Server
     private val handler = ServletContextHandler()
 
     fun start(): HttpServer {
-        server = Server(4545)
+        server = Server(port)
         server.handler = handler
         server.start()
         return this
@@ -22,6 +22,12 @@ class HttpServer : AutoCloseable {
 
     override fun close() {
         server.stop()
+    }
+
+    fun join(): HttpServer {
+        start()
+        server.join()
+        return this
     }
 
     fun get(path: String, route: (Request, Response) -> Unit): HttpServer {
