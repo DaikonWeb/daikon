@@ -14,4 +14,13 @@ class ResponseTest {
                 assertThat(get("/").statusCode).isEqualTo(201)
             }
     }
+
+    @Test
+    fun `content type`() {
+        HttpServer()
+            .any("/") { _, res -> res.content("application/json") }
+            .start().use {
+                assertThat(get("/").headers["Content-Type"]).isEqualTo("application/json")
+            }
+    }
 }

@@ -3,6 +3,11 @@ package daikon
 import javax.servlet.http.HttpServletResponse
 
 class HttpResponse(private val response: HttpServletResponse) : Response {
+
+    override fun content(type: String) {
+       response.contentType = type
+    }
+
     override fun status(code: Int) {
         response.status = code
     }
