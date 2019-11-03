@@ -34,10 +34,3 @@ compileTestKotlin {
 test {
     useJUnitPlatform()
 }
-
-jar {
-    enabled = true
-    //from {
-    //    configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) }
-    //}
-}
