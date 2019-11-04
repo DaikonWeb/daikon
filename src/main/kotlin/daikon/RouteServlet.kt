@@ -1,6 +1,7 @@
 package daikon
 
 import daikon.Method.*
+import org.eclipse.jetty.http.HttpStatus.METHOD_NOT_ALLOWED_405
 import javax.servlet.http.HttpServlet
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -28,6 +29,6 @@ class RouteServlet(private val method: Method, private val action: (Request, Res
     }
 
     private fun notAllow(response: HttpServletResponse) {
-        response.status = 405
+        response.status = METHOD_NOT_ALLOWED_405
     }
 }
