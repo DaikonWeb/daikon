@@ -3,8 +3,8 @@ plugins {
     id("maven-publish")
 }
 
-group 'daikon'
-version '0.2.7'
+group = 'com.github.fracassi-marco'
+version '0.2.8'
 
 repositories {
     mavenCentral()
