@@ -23,4 +23,13 @@ class ResponseTest {
                 assertThat(get("/").headers["Content-Type"]).isEqualTo("application/json")
             }
     }
+
+    @Test
+    fun headers() {
+        HttpServer()
+            .any("/") { _, res -> res.header("foo", "bar") }
+            .start().use {
+                assertThat(get("/").headers["foo"]).isEqualTo("bar")
+            }
+    }
 }

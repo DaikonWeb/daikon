@@ -3,6 +3,9 @@ package daikon
 import javax.servlet.http.HttpServletResponse
 
 class HttpResponse(private val response: HttpServletResponse) : Response {
+    override fun header(name: String, value: String) {
+        response.addHeader(name, value)
+    }
 
     override fun content(type: String) {
        response.contentType = type
