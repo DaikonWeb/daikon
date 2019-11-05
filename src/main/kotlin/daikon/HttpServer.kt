@@ -40,6 +40,11 @@ class HttpServer(private val port: Int = 4545) : AutoCloseable {
         return this
     }
 
+    fun head(path: String, route: (Request, Response) -> Unit): HttpServer {
+        add(HEAD, path, route)
+        return this
+    }
+
     fun any(path: String, route: (Request, Response) -> Unit): HttpServer {
         add(ANY, path, route)
         return this

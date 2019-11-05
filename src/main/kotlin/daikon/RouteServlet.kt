@@ -16,6 +16,10 @@ class RouteServlet(private val method: Method, private val action: (Request, Res
         execute(GET, request, response)
     }
 
+    override fun doHead(request: HttpServletRequest, response: HttpServletResponse) {
+        execute(HEAD, request, response)
+    }
+
     private fun execute(actualMethod: Method, request: HttpServletRequest, response: HttpServletResponse) {
         when(method){
             actualMethod -> doAction(request, response)

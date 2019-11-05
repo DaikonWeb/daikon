@@ -1,8 +1,11 @@
 package daikon
 
 import daikon.Localhost.get
+import daikon.Localhost.head
 import daikon.Localhost.post
 import org.assertj.core.api.Assertions.assertThat
+import org.eclipse.jetty.http.HttpStatus
+import org.eclipse.jetty.http.HttpStatus.ACCEPTED_202
 import org.junit.jupiter.api.Test
 
 class HttpMethodsTest {
@@ -41,6 +44,15 @@ class HttpMethodsTest {
             .get("/") { _, _ -> }
             .start().use {
                 assertThat(post("/").statusCode).isEqualTo(405)
+            }
+    }
+
+    @Test
+    fun `do head`() {
+        HttpServer()
+            .head("/") { _, res -> res.status(ACCEPTED_202) }
+            .start().use {
+                assertThat(head("/").statusCode).isEqualTo(ACCEPTED_202)
             }
     }
 }

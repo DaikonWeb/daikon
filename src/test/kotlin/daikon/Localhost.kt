@@ -15,5 +15,9 @@ object Localhost {
         return khttp.post(localUrl(url), headers, params, data, json, auth, cookies, timeout, allowRedirects, stream, files)
     }
 
+    fun head(url: String, headers: Map<String, String> = mapOf(), params: Map<String, String> = mapOf(), data: Any? = null, json: Any? = null, auth: Authorization? = null, cookies: Map<String, String>? = null, timeout: Double = DEFAULT_TIMEOUT, allowRedirects: Boolean? = null, stream: Boolean = false, files: List<FileLike> = listOf()): Response {
+        return khttp.head(localUrl(url), headers, params, data, json, auth, cookies, timeout, allowRedirects, stream, files)
+    }
+
     private fun localUrl(url: String) = "http://localhost:4545$url"
 }
