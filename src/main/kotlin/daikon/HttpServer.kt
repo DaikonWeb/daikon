@@ -3,9 +3,12 @@ package daikon
 import daikon.Method.*
 import org.eclipse.jetty.server.Server
 import org.eclipse.jetty.servlet.DefaultServlet
+import org.eclipse.jetty.servlet.FilterHolder
 import org.eclipse.jetty.servlet.ServletContextHandler
 import org.eclipse.jetty.servlet.ServletHolder
 import org.eclipse.jetty.util.resource.Resource
+import java.util.*
+import javax.servlet.DispatcherType
 
 
 class HttpServer(private val port: Int = 4545) : AutoCloseable {
@@ -45,6 +48,15 @@ class HttpServer(private val port: Int = 4545) : AutoCloseable {
         return this
     }
 
+    fun before(path: String, action: (Request, Response) -> Unit): HttpServer {
+        handler.addFilter(
+            FilterHolder(ActionFilter(action)),
+            path,
+            EnumSet.of(DispatcherType.REQUEST)
+        )
+        return this
+    }
+
     fun any(path: String, route: (Request, Response) -> Unit): HttpServer {
         add(ANY, path, route)
         return this
@@ -61,4 +73,3 @@ class HttpServer(private val port: Int = 4545) : AutoCloseable {
         return this
     }
 }
-
