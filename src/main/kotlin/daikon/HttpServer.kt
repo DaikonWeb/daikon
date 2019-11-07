@@ -8,11 +8,12 @@ import org.eclipse.jetty.servlet.ServletContextHandler
 import org.eclipse.jetty.servlet.ServletHolder
 import org.eclipse.jetty.util.resource.Resource
 import java.util.*
-import javax.servlet.DispatcherType
+import javax.servlet.DispatcherType.REQUEST
 
 
 class HttpServer(private val port: Int = 4545) : AutoCloseable {
 
+    private val afterActions = mutableListOf<(Request, Response) -> Unit>()
     private lateinit var server: Server
     private val handler = ServletContextHandler()
 
@@ -49,11 +50,12 @@ class HttpServer(private val port: Int = 4545) : AutoCloseable {
     }
 
     fun before(path: String, action: (Request, Response) -> Unit): HttpServer {
-        handler.addFilter(
-            FilterHolder(ActionFilter(action)),
-            path,
-            EnumSet.of(DispatcherType.REQUEST)
-        )
+        handler.addFilter(FilterHolder(ActionFilter(action)), path, EnumSet.of(REQUEST))
+        return this
+    }
+
+    fun after(action: (Request, Response) -> Unit): HttpServer {
+        afterActions.add(action)
         return this
     }
 
@@ -63,7 +65,7 @@ class HttpServer(private val port: Int = 4545) : AutoCloseable {
     }
 
     private fun add(method: Method, path: String, route: (Request, Response) -> Unit) {
-        handler.addServlet(ServletHolder(RouteServlet(method, route)), path)
+        handler.addServlet(ServletHolder(RouteServlet(method, route, afterActions)), path)
     }
 
     fun assets(path: String): HttpServer {

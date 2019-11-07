@@ -18,4 +18,16 @@ class HooksTest {
                 assertThat(response.statusCode).isEqualTo(ACCEPTED_202)
             }
     }
+
+    @Test
+    fun `do action after route was called`() {
+        HttpServer()
+            .after { _, res -> res.write("Hello") }
+            .get("/") { _, res -> res.status(ACCEPTED_202)}
+            .start().use {
+                val response = get("/")
+                assertThat(response.text).isEqualTo("Hello")
+                assertThat(response.statusCode).isEqualTo(ACCEPTED_202)
+            }
+    }
 }

@@ -6,7 +6,11 @@ import javax.servlet.http.HttpServlet
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-class RouteServlet(private val method: Method, private val action: (Request, Response) -> Unit) : HttpServlet() {
+class RouteServlet(
+    private val method: Method,
+    private val action: (Request, Response) -> Unit,
+    private val afterActions: MutableList<(Request, Response) -> Unit>
+) : HttpServlet() {
 
     override fun doPost(request: HttpServletRequest, response: HttpServletResponse) {
         execute(POST, request, response)
@@ -29,7 +33,10 @@ class RouteServlet(private val method: Method, private val action: (Request, Res
     }
 
     private fun doAction(request: HttpServletRequest, response: HttpServletResponse) {
-        action.invoke(HttpRequest(request), HttpResponse(response))
+        val httpRequest = HttpRequest(request)
+        val httpResponse = HttpResponse(response)
+        action.invoke(httpRequest, httpResponse)
+        afterActions.forEach { it.invoke(httpRequest, httpResponse) }
     }
 
     private fun notAllow(response: HttpServletResponse) {
