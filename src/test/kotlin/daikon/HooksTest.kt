@@ -22,12 +22,22 @@ class HooksTest {
     @Test
     fun `do action after route was called`() {
         HttpServer()
-            .after { _, res -> res.write("Hello") }
-            .get("/") { _, res -> res.status(ACCEPTED_202)}
+            .get("/") { _, res -> res.write("Hello")}
+            .after { _, res -> res.write(" world") }
             .start().use {
                 val response = get("/")
-                assertThat(response.text).isEqualTo("Hello")
-                assertThat(response.statusCode).isEqualTo(ACCEPTED_202)
+                assertThat(response.text).isEqualTo("Hello world")
+            }
+    }
+
+    @Test
+    fun `do action before route was called`() {
+        HttpServer()
+            .before { _, res -> res.write("Hello") }
+            .get("/") { _, res -> res.write(" world")}
+            .start().use {
+                val response = get("/")
+                assertThat(response.text).isEqualTo("Hello world")
             }
     }
 }

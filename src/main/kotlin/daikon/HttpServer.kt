@@ -54,6 +54,11 @@ class HttpServer(private val port: Int = 4545) : AutoCloseable {
         return this
     }
 
+    fun before(action: (Request, Response) -> Unit): HttpServer {
+        before("/*", action)
+        return this
+    }
+
     fun after(action: (Request, Response) -> Unit): HttpServer {
         afterActions.add(action)
         return this
