@@ -35,4 +35,13 @@ class RequestTest {
                 assertThat(post("/", headers = mapOf("name" to "Bob")).text).isEqualTo("hello Bob")
             }
     }
+
+    @Test
+    fun body() {
+        HttpServer()
+            .any("/") { req, res -> res.write("Hello ${req.body()}") }
+            .start().use {
+                assertThat(post("/", data = "Bob").text).isEqualTo("Hello Bob")
+            }
+    }
 }

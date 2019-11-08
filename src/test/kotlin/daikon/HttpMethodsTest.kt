@@ -6,6 +6,7 @@ import daikon.Localhost.post
 import org.assertj.core.api.Assertions.assertThat
 import org.eclipse.jetty.http.HttpStatus
 import org.eclipse.jetty.http.HttpStatus.ACCEPTED_202
+import org.eclipse.jetty.http.HttpStatus.METHOD_NOT_ALLOWED_405
 import org.junit.jupiter.api.Test
 
 class HttpMethodsTest {
@@ -43,7 +44,7 @@ class HttpMethodsTest {
         HttpServer()
             .get("/") { _, _ -> }
             .start().use {
-                assertThat(post("/").statusCode).isEqualTo(405)
+                assertThat(post("/").statusCode).isEqualTo(METHOD_NOT_ALLOWED_405)
             }
     }
 

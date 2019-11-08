@@ -1,6 +1,7 @@
 package daikon
 
 import daikon.Localhost.get
+import daikon.Localhost.post
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 

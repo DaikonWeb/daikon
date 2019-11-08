@@ -49,13 +49,8 @@ class HttpServer(private val port: Int = 4545) : AutoCloseable {
         return this
     }
 
-    fun before(path: String, action: (Request, Response) -> Unit): HttpServer {
+    fun before(path: String = "/*", action: (Request, Response) -> Unit): HttpServer {
         handler.addFilter(FilterHolder(ActionFilter(action)), path, EnumSet.of(REQUEST))
-        return this
-    }
-
-    fun before(action: (Request, Response) -> Unit): HttpServer {
-        before("/*", action)
         return this
     }
 
