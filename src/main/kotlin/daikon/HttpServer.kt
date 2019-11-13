@@ -3,22 +3,22 @@ package daikon
 import daikon.Method.*
 import org.eclipse.jetty.server.Server
 import org.eclipse.jetty.servlet.DefaultServlet
-import org.eclipse.jetty.servlet.FilterHolder
 import org.eclipse.jetty.servlet.ServletContextHandler
 import org.eclipse.jetty.servlet.ServletHolder
 import org.eclipse.jetty.util.resource.Resource
-import java.util.*
-import javax.servlet.DispatcherType.REQUEST
 
 
 class HttpServer(private val port: Int = 4545) : AutoCloseable {
 
-    private val afterActions = mutableListOf<(Request, Response) -> Unit>()
     private lateinit var server: Server
     private val handler = ServletContextHandler()
+    private val routes = Routing()
+    private val befores = Routing()
+    private val afters = Routing()
 
     fun start(): HttpServer {
         server = Server(port)
+        handler.addServlet(ServletHolder(RoutingServlet(befores, routes, afters)), "/*")
         server.handler = handler
         server.start()
         return this
@@ -50,12 +50,12 @@ class HttpServer(private val port: Int = 4545) : AutoCloseable {
     }
 
     fun before(path: String = "/*", action: (Request, Response) -> Unit): HttpServer {
-        handler.addFilter(FilterHolder(ActionFilter(action)), path, EnumSet.of(REQUEST))
+        befores.add(Route(ANY, path, action))
         return this
     }
 
-    fun after(action: (Request, Response) -> Unit): HttpServer {
-        afterActions.add(action)
+    fun after(path: String = "/*", action: (Request, Response) -> Unit): HttpServer {
+        afters.add(Route(ANY, path, action))
         return this
     }
 
@@ -65,7 +65,7 @@ class HttpServer(private val port: Int = 4545) : AutoCloseable {
     }
 
     private fun add(method: Method, path: String, route: (Request, Response) -> Unit) {
-        handler.addServlet(ServletHolder(RouteServlet(method, route, afterActions)), path)
+        routes.add(Route(method, path, route))
     }
 
     fun assets(path: String): HttpServer {

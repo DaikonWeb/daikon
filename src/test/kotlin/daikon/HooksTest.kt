@@ -40,4 +40,17 @@ class HooksTest {
                 assertThat(response.text).isEqualTo("Hello world")
             }
     }
+
+    @Test
+    fun `do multiple action before calling route`() {
+        HttpServer()
+            .before("/*") { _, res -> res.write("B") }
+            .before("/foo/*") { _, res -> res.write("y") }
+            .before("/foo/bar") { _, res -> res.write("e") }
+            .get("/*") { _, res -> res.write(" Bob")}
+            .start().use {
+                val response = get("/foo/bar")
+                assertThat(response.text).isEqualTo("Bye Bob")
+            }
+    }
 }
