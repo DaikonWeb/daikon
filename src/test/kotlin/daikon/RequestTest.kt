@@ -44,4 +44,22 @@ class RequestTest {
                 assertThat(post("/", data = "Bob").text).isEqualTo("Hello Bob")
             }
     }
+
+    @Test
+    fun `path parameter at the end of the path`() {
+        HttpServer()
+            .get("/foo/:size") { req, res -> res.write("He wears size ${req.param(":size")}") }
+            .start().use {
+                assertThat(get("/foo/XL").text).isEqualTo("He wears size XL")
+            }
+    }
+
+    @Test
+    fun `parameters not found`() {
+        HttpServer()
+            .get("/:foo") { req, res -> res.write("${req.param(":baz")} ${req.param("baz")}") }
+            .start().use {
+                assertThat(get("/123").text).isEqualTo("null null")
+            }
+    }
 }

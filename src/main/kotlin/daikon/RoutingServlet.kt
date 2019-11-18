@@ -1,11 +1,7 @@
 package daikon
 
 import daikon.Method.ANY
-import org.eclipse.jetty.http.HttpStatus
-import org.eclipse.jetty.http.HttpStatus.METHOD_NOT_ALLOWED_405
 import org.eclipse.jetty.http.HttpStatus.NOT_FOUND_404
-import org.eclipse.jetty.server.ResourceService
-import org.eclipse.jetty.servlet.DefaultServlet
 import javax.servlet.GenericServlet
 import javax.servlet.ServletRequest
 import javax.servlet.ServletResponse
@@ -19,21 +15,22 @@ class RoutingServlet(
 ) : GenericServlet() {
 
     override fun service(req: ServletRequest, res: ServletResponse) {
-        val request = HttpRequest(req as HttpServletRequest)
         val response = HttpResponse(res as HttpServletResponse)
-
+        val method = (req as HttpServletRequest).method.toUpperCase()
+        
         befores
-            .allFor(Method.valueOf(req.method.toUpperCase()), req.requestURI)
-            .forEach { it.action.invoke(request, response) }
+            .allFor(Method.valueOf(method), req.requestURI)
+            .forEach { it.action.invoke(httpRequest(req, PathParams(it.path)), response) }
 
-        routes
+        val bestOne = routes
             .default(Route(ANY, "/*") { _, r -> r.status(NOT_FOUND_404) })
-            .bestFor(Method.valueOf(req.method.toUpperCase()), req.requestURI)
-            .action
-            .invoke(request, response)
+            .bestFor(Method.valueOf(method), req.requestURI)
+        bestOne.action.invoke(httpRequest(req, PathParams(bestOne.path)), response)
 
         afters
-            .allFor(Method.valueOf(req.method.toUpperCase()), req.requestURI)
-            .forEach { it.action.invoke(request, response) }
+            .allFor(Method.valueOf(method), req.requestURI)
+            .forEach { it.action.invoke(httpRequest(req, PathParams(it.path)), response) }
     }
+
+    private fun httpRequest(req: ServletRequest, pathParams: PathParams) = HttpRequest(req as HttpServletRequest, pathParams)
 }

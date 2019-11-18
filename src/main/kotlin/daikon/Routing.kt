@@ -27,7 +27,7 @@ class Routing {
     private fun filterBy(method: Method) = routes.filter { it.method == method || it.method == ANY }
 
     private fun approximate(route: Route, path: String): Boolean {
-        return path.matches(route.path.replace("*", ".*").toRegex())
+        return route.matches(path)
     }
 
     private fun exact(route: Route, path: String): Boolean {
