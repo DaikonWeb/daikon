@@ -81,4 +81,22 @@ class RequestTest {
                 assertThat(get("/123").text).isEqualTo("null null")
             }
     }
+
+    @Test
+    fun `request url`() {
+        HttpServer()
+            .get("/:foo") { req, res -> res.write(req.url()) }
+            .start().use {
+                assertThat(get("/123").text).isEqualTo("http://localhost:4545/123")
+            }
+    }
+
+    @Test
+    fun `request path`() {
+        HttpServer()
+            .get("/:foo") { req, res -> res.write(req.path()) }
+            .start().use {
+                assertThat(get("/123").text).isEqualTo("/123")
+            }
+    }
 }

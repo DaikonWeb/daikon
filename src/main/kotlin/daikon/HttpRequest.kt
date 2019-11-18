@@ -3,6 +3,15 @@ package daikon
 import javax.servlet.http.HttpServletRequest
 
 class HttpRequest(private val request: HttpServletRequest, private val pathParams: PathParams) : Request {
+
+    override fun path(): String {
+        return request.requestURI
+    }
+
+    override fun url(): String {
+        return request.requestURL.toString()
+    }
+
     override fun body(): String {
         return request.reader.readText()
     }
@@ -12,6 +21,6 @@ class HttpRequest(private val request: HttpServletRequest, private val pathParam
     }
 
     override fun param(name: String): String? {
-         return request.getParameter(name) ?: pathParams.valueOf(request.requestURI)[name]
+         return request.getParameter(name) ?: pathParams.valueOf(path())[name]
     }
 }
