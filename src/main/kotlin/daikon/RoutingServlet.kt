@@ -3,6 +3,7 @@ package daikon
 import daikon.Method.ANY
 import org.eclipse.jetty.http.HttpStatus
 import org.eclipse.jetty.http.HttpStatus.METHOD_NOT_ALLOWED_405
+import org.eclipse.jetty.http.HttpStatus.NOT_FOUND_404
 import org.eclipse.jetty.server.ResourceService
 import org.eclipse.jetty.servlet.DefaultServlet
 import javax.servlet.GenericServlet
@@ -26,7 +27,7 @@ class RoutingServlet(
             .forEach { it.action.invoke(request, response) }
 
         routes
-            .default(Route(ANY, "/*") { _, r -> r.status(METHOD_NOT_ALLOWED_405) })
+            .default(Route(ANY, "/*") { _, r -> r.status(NOT_FOUND_404) })
             .bestFor(Method.valueOf(req.method.toUpperCase()), req.requestURI)
             .action
             .invoke(request, response)
