@@ -56,6 +56,15 @@ class RequestTest {
     }
 
     @Test
+    fun `empty body`() {
+        HttpServer()
+            .any("/") { req, res -> res.write("Foo${req.body()}Bar") }
+            .start().use {
+                assertThat(post("/").text).isEqualTo("FooBar")
+            }
+    }
+
+    @Test
     fun `path parameter at the end of the path`() {
         HttpServer()
             .get("/foo/:size") { req, res -> res.write("He wears size ${req.param(":size")}") }
