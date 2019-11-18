@@ -37,6 +37,16 @@ class RequestTest {
     }
 
     @Test
+    fun `header not found`() {
+        HttpServer()
+            .post("/*") { req, res -> res.write("hello ${req.header("name")}") }
+            .start()
+            .use {
+                assertThat(post("/").text).isEqualTo("hello null")
+            }
+    }
+
+    @Test
     fun body() {
         HttpServer()
             .any("/") { req, res -> res.write("Hello ${req.body()}") }
