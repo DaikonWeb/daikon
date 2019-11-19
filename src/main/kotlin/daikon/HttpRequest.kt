@@ -3,11 +3,11 @@ package daikon
 import javax.servlet.http.HttpServletRequest
 
 class HttpRequest(private val request: HttpServletRequest, private val pathParams: PathParams) : Request {
-    override fun <T> attribute(key: String): T? {
-        return request.getAttribute(key) as T
+    override fun <T> attribute(key: String): T {
+        return (request.getAttribute(key) as T)!!
     }
 
-    override fun <T> attribute(key: String, value: T?) {
+    override fun <T> attribute(key: String, value: T) {
         request.setAttribute(key, value)
     }
 
@@ -23,11 +23,11 @@ class HttpRequest(private val request: HttpServletRequest, private val pathParam
         return request.reader.readText()
     }
 
-    override fun header(name: String): String? {
+    override fun header(name: String): String {
         return request.getHeader(name)
     }
 
-    override fun param(name: String): String? {
-         return request.getParameter(name) ?: pathParams.valueOf(path())[name]
+    override fun param(name: String): String {
+         return request.getParameter(name) ?: pathParams.valueOf(path())[name]!!
     }
 }

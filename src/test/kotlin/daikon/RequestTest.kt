@@ -3,6 +3,7 @@ package daikon
 import daikon.Localhost.get
 import daikon.Localhost.post
 import org.assertj.core.api.Assertions.assertThat
+import org.eclipse.jetty.http.HttpStatus.INTERNAL_SERVER_ERROR_500
 import org.junit.jupiter.api.Test
 
 class RequestTest {
@@ -42,7 +43,7 @@ class RequestTest {
             .post("/*") { req, res -> res.write("hello ${req.header("name")}") }
             .start()
             .use {
-                assertThat(post("/").text).isEqualTo("hello null")
+                assertThat(post("/").statusCode).isEqualTo(INTERNAL_SERVER_ERROR_500)
             }
     }
 
@@ -76,9 +77,9 @@ class RequestTest {
     @Test
     fun `parameters not found`() {
         HttpServer()
-            .get("/:foo") { req, res -> res.write("${req.param(":baz")} ${req.param("baz")}") }
+            .get("/") { req, res -> res.write(req.param(":baz")) }
             .start().use {
-                assertThat(get("/123").text).isEqualTo("null null")
+                assertThat(get("/").statusCode).isEqualTo(INTERNAL_SERVER_ERROR_500)
             }
     }
 
@@ -104,7 +105,7 @@ class RequestTest {
     fun attribute() {
         HttpServer()
             .before("/") { req, _ -> req.attribute("foo_key", "foo_value") }
-            .get("/") { req, res -> res.write(req.attribute("foo_key")!!) }
+            .get("/") { req, res -> res.write(req.attribute("foo_key")) }
             .start().use {
                 assertThat(get("/").text).isEqualTo("foo_value")
             }
@@ -115,7 +116,7 @@ class RequestTest {
         HttpServer()
             .get("/") { req, res -> res.write("Hello ${req.attribute<String>("any")}") }
             .start().use {
-                assertThat(get("/").text).isEqualTo("Hello null")
+                assertThat(get("/").statusCode).isEqualTo(INTERNAL_SERVER_ERROR_500)
             }
     }
 }
