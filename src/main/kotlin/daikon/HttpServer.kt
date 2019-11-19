@@ -34,38 +34,58 @@ class HttpServer(private val port: Int = 4545) : AutoCloseable {
         return this
     }
 
-    fun get(path: String, route: (Request, Response) -> Unit): HttpServer {
-        add(GET, path, route)
+    fun get(path: String, action: (Request, Response) -> Unit): HttpServer {
+        get(path, DummyRouteAction(action))
         return this
     }
 
-    fun post(path: String, route: (Request, Response) -> Unit): HttpServer {
-        add(POST, path, route)
+    fun get(path: String, action: RouteAction): HttpServer {
+        add(GET, path, action)
         return this
     }
 
-    fun head(path: String, route: (Request, Response) -> Unit): HttpServer {
-        add(HEAD, path, route)
+    fun post(path: String, action: (Request, Response) -> Unit): HttpServer {
+        post(path, DummyRouteAction(action))
+        return this
+    }
+
+    fun post(path: String, action: RouteAction): HttpServer {
+        add(POST, path, action)
+        return this
+    }
+
+    fun head(path: String, action: (Request, Response) -> Unit): HttpServer {
+        head(path, DummyRouteAction(action))
+        return this
+    }
+
+    fun head(path: String, action: RouteAction): HttpServer {
+        add(HEAD, path, action)
+        return this
+    }
+
+    fun any(path: String, action: (Request, Response) -> Unit): HttpServer {
+        any(path, DummyRouteAction(action))
+        return this
+    }
+
+    fun any(path: String, action: RouteAction): HttpServer {
+        add(ANY, path, action)
         return this
     }
 
     fun before(path: String = "/*", action: (Request, Response) -> Unit): HttpServer {
-        befores.add(Route(ANY, path, action))
+        befores.add(Route(ANY, path, DummyRouteAction(action)))
         return this
     }
 
     fun after(path: String = "/*", action: (Request, Response) -> Unit): HttpServer {
-        afters.add(Route(ANY, path, action))
+        afters.add(Route(ANY, path, DummyRouteAction(action)))
         return this
     }
 
-    fun any(path: String, route: (Request, Response) -> Unit): HttpServer {
-        add(ANY, path, route)
-        return this
-    }
-
-    private fun add(method: Method, path: String, route: (Request, Response) -> Unit) {
-        routes.add(Route(method, path, route))
+    private fun add(method: Method, path: String, action: RouteAction) {
+        routes.add(Route(method, path, action))
     }
 
     fun assets(path: String): HttpServer {

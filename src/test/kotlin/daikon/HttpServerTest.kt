@@ -9,7 +9,7 @@ class HttpServerTest {
     @Test
     fun `start and stop`() {
         HttpServer()
-            .get("/") { _, _ -> }
+            .get("/", NopAction())
             .start().use {
                 val response = get("/")
                 assertThat(response.statusCode).isEqualTo(200)

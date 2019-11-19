@@ -9,8 +9,8 @@ class RoutingTest {
     @Test
     fun `filter by method`() {
         val routing = Routing()
-            .add(Route(GET, "/") { _, _ -> })
-            .add(Route(POST, "/") { _, _ -> })
+            .add(Route(GET, "/", NopAction()))
+            .add(Route(POST, "/", NopAction()))
 
         val (method, _, _) = routing.bestFor(POST, "/")
 
@@ -20,8 +20,8 @@ class RoutingTest {
     @Test
     fun `filter by exact path`() {
         val routing = Routing()
-            .add(Route(GET, "/foo") { _, _ -> })
-            .add(Route(GET, "/bar") { _, _ -> })
+            .add(Route(GET, "/foo", NopAction()))
+            .add(Route(GET, "/bar", NopAction()))
 
         val (_, path, _) = routing.bestFor(GET, "/bar")
 
@@ -30,7 +30,7 @@ class RoutingTest {
 
     @Test
     fun `manage any method`() {
-        val routing = Routing().add(Route(ANY, "/foo") { _, _ -> })
+        val routing = Routing().add(Route(ANY, "/foo", NopAction()))
 
         val (_, path, _) = routing.bestFor(GET, "/foo")
 
@@ -40,8 +40,8 @@ class RoutingTest {
     @Test
     fun `route starts with`() {
         val routing = Routing()
-            .add(Route(GET, "/foo*") { _, _ -> })
-            .add(Route(GET, "/*") { _, _ -> })
+            .add(Route(GET, "/foo*", NopAction()))
+            .add(Route(GET, "/*", NopAction()))
 
         assertThat(routing.bestFor(GET, "/").path).isEqualTo("/*")
         assertThat(routing.bestFor(GET, "/foo").path).isEqualTo("/foo*")
@@ -53,8 +53,8 @@ class RoutingTest {
     @Test
     fun `use strongest route`() {
         val routing = Routing()
-            .add(Route(GET, "/*") { _, _ -> })
-            .add(Route(GET, "/bar/*") { _, _ -> })
+            .add(Route(GET, "/*", NopAction()))
+            .add(Route(GET, "/bar/*", NopAction()))
 
         assertThat(routing.bestFor(GET, "/ba").path).isEqualTo("/*")
         assertThat(routing.bestFor(GET, "/bar/").path).isEqualTo("/bar/*")
@@ -63,8 +63,8 @@ class RoutingTest {
     @Test
     fun `default route`() {
         val routing = Routing()
-            .add(Route(GET, "/") { _, _ -> })
-            .default(Route(ANY, "/") { _, _ -> })
+            .add(Route(GET, "/", NopAction()))
+            .default(Route(ANY, "/", NopAction()))
 
         assertThat(routing.bestFor(POST, "/").method).isEqualTo(ANY)
     }
@@ -72,9 +72,9 @@ class RoutingTest {
     @Test
     fun `all route for a given path preserve order`() {
         val routes = listOf(
-            Route(GET, "/*") { _, _ -> },
-            Route(GET, "/foo/*") { _, _ -> },
-            Route(GET, "/foo/bar") { _, _ -> }
+            Route(GET, "/*", NopAction()),
+            Route(GET, "/foo/*", NopAction()),
+            Route(GET, "/foo/bar", NopAction())
         )
 
         val all = Routing().add(routes[0]).add(routes[1]).add(routes[2]).allFor(GET, "/foo/bar")

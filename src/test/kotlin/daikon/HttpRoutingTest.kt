@@ -57,4 +57,17 @@ class HttpRoutingTest {
                 assertThat(khttp.get("http://localhost:4546/").text).isEqualTo("Hello")
             }
     }
+
+    @Test
+    fun `route action`() {
+        HttpServer()
+            .get("/foo", object: RouteAction {
+                override fun handle(request: Request, response: Response) {
+                    response.write("Hello foo")
+                }
+            })
+            .start().use {
+                assertThat(get("/foo").text).isEqualTo("Hello foo")
+            }
+    }
 }

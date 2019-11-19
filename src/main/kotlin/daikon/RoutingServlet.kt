@@ -23,7 +23,7 @@ class RoutingServlet(
             .forEach { invoke(it, req, res) }
 
         routes
-            .default(Route(ANY, "/*") { _, r -> r.status(NOT_FOUND_404) })
+            .default(Route(ANY, "/*", DummyRouteAction { _, r -> r.status(NOT_FOUND_404) }))
             .bestFor(Method.valueOf(req.method), req.requestURI)
             .also { invoke(it, req, res) }
 
@@ -33,6 +33,6 @@ class RoutingServlet(
     }
 
     private fun invoke(route: Route, req: HttpServletRequest, res: HttpServletResponse) {
-        route.action.invoke(HttpRequest(req, PathParams(route.path)), HttpResponse(res))
+        route.action.handle(HttpRequest(req, PathParams(route.path)), HttpResponse(res))
     }
 }

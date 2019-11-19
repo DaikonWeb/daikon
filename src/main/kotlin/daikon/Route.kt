@@ -1,6 +1,6 @@
 package daikon
 
-data class Route(val method: Method, val path: String, val action: (Request, Response) -> Unit) {
+data class Route(val method: Method, val path: String, val action: RouteAction) {
 
     private fun pathPattern() : Regex {
         if(path.contains(":")) {

@@ -41,7 +41,7 @@ class HttpMethodsTest {
     @Test
     fun `page not found`() {
         HttpServer()
-            .get("/") { _, _ -> }
+            .get("/", NopAction())
             .start().use {
                 assertThat(post("/").statusCode).isEqualTo(NOT_FOUND_404)
                 assertThat(get("/foo").statusCode).isEqualTo(NOT_FOUND_404)
