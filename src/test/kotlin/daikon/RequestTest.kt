@@ -99,4 +99,23 @@ class RequestTest {
                 assertThat(get("/123").text).isEqualTo("/123")
             }
     }
+
+    @Test
+    fun attribute() {
+        HttpServer()
+            .before("/") { req, _ -> req.attribute("foo_key", "foo_value") }
+            .get("/") { req, res -> res.write(req.attribute("foo_key")!!) }
+            .start().use {
+                assertThat(get("/").text).isEqualTo("foo_value")
+            }
+    }
+
+    @Test
+    fun `attribute not found`() {
+        HttpServer()
+            .get("/") { req, res -> res.write("Hello ${req.attribute<String>("any")}") }
+            .start().use {
+                assertThat(get("/").text).isEqualTo("Hello null")
+            }
+    }
 }

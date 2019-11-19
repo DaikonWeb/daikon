@@ -3,6 +3,13 @@ package daikon
 import javax.servlet.http.HttpServletRequest
 
 class HttpRequest(private val request: HttpServletRequest, private val pathParams: PathParams) : Request {
+    override fun <T> attribute(key: String): T? {
+        return request.getAttribute(key) as T
+    }
+
+    override fun <T> attribute(key: String, value: T?) {
+        request.setAttribute(key, value)
+    }
 
     override fun path(): String {
         return request.requestURI
