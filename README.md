@@ -40,4 +40,4 @@ HttpServer()
 
 ## License
 
-This project is licensed under the GNU GENERAL PUBLIC LICENSE Version 3 - see the [LICENSE](LICENSE) file for details
+This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details
