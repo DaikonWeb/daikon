@@ -15,22 +15,24 @@ class RoutingServlet(
 ) : GenericServlet() {
 
     override fun service(req: ServletRequest, res: ServletResponse) {
-        val response = HttpResponse(res as HttpServletResponse)
-        val method = (req as HttpServletRequest).method.toUpperCase()
-        
-        befores
-            .allFor(Method.valueOf(method), req.requestURI)
-            .forEach { it.action.invoke(httpRequest(req, PathParams(it.path)), response) }
+        req as HttpServletRequest
+        res as HttpServletResponse
 
-        val bestOne = routes
+        befores
+            .allFor(Method.valueOf(req.method), req.requestURI)
+            .forEach { invoke(it, req, res) }
+
+        routes
             .default(Route(ANY, "/*") { _, r -> r.status(NOT_FOUND_404) })
-            .bestFor(Method.valueOf(method), req.requestURI)
-        bestOne.action.invoke(httpRequest(req, PathParams(bestOne.path)), response)
+            .bestFor(Method.valueOf(req.method), req.requestURI)
+            .also { invoke(it, req, res) }
 
         afters
-            .allFor(Method.valueOf(method), req.requestURI)
-            .forEach { it.action.invoke(httpRequest(req, PathParams(it.path)), response) }
+            .allFor(Method.valueOf(req.method), req.requestURI)
+            .forEach { invoke(it, req, res) }
     }
 
-    private fun httpRequest(req: ServletRequest, pathParams: PathParams) = HttpRequest(req as HttpServletRequest, pathParams)
+    private fun invoke(route: Route, req: HttpServletRequest, res: HttpServletResponse) {
+        route.action.invoke(HttpRequest(req, PathParams(route.path)), HttpResponse(res))
+    }
 }
