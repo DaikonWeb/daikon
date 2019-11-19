@@ -9,19 +9,36 @@ The main goals are:
 ## How to add Daikon to your project
 
 ### Gradle
+- Add JitPack in your root build.gradle at the end of repositories:
 ```
-implementation "daikon:daikon:0.1"
+repositories {
+    ...
+    maven { url 'https://jitpack.io' }
+}
+```
+- Add the dependency
+```
+implementation 'com.github.fracassi-marco:daikon:0.4.0'
 ```
 
 ### Maven
+- Add the JitPack repository to your build file 
+```
+<repositories>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+</repositories>
+```
+- Add the dependency
 ```
 <dependency>
-  <groupId>daikon</groupId>
-  <artifactId>daikon</artifactId>
-  <version>0.1</version>
+    <groupId>com.github.fracassi-marco</groupId>
+    <artifactId>daikon</artifactId>
+    <version>0.4.0</version>
 </dependency>
 ```
-
 
 ## Getting Started
 ```
