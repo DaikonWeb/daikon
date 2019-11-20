@@ -76,7 +76,7 @@ class HttpRoutingTest {
     @Test
     fun `halt request`() {
         HttpServer()
-            .before { _, _ -> halt(UNAUTHORIZED_401, "Go away") }
+            .before { _, res -> halt(res, UNAUTHORIZED_401, "Go away") }
             .get("/") { _, res -> res.status(OK_200)}
             .start().use {
                 val response = get("/")

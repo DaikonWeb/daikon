@@ -5,4 +5,5 @@ interface Response {
     fun status(code: Int)
     fun content(type: String)
     fun header(name: String, value: String)
+    fun body(): String
 }

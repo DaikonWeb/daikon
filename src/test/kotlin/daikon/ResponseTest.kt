@@ -33,4 +33,20 @@ class ResponseTest {
                 assertThat(get("/").headers["foo"]).isEqualTo("bar")
             }
     }
+
+    @Test
+    fun body() {
+        var body = ""
+
+        HttpServer()
+            .before("/") { _, res -> res.write("Hi") }
+            .any("/") { _, res ->
+                res.write(" Bob")
+                body = res.body()
+            }
+            .start().use {
+                get("/")
+                assertThat(body).isEqualTo("Hi Bob")
+            }
+    }
 }

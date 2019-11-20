@@ -16,28 +16,26 @@ class RoutingServlet(
 
     override fun service(req: ServletRequest, res: ServletResponse) {
         req as HttpServletRequest
-        res as HttpServletResponse
+        val httpRes = HttpResponse(res as HttpServletResponse)
 
         try {
             befores
                 .allFor(Method.valueOf(req.method), req.requestURI)
-                .forEach { invoke(it, req, res) }
+                .forEach { invoke(it, req, httpRes) }
 
             routes
                 .default(Route(ANY, "/*", DummyRouteAction { _, r -> r.status(NOT_FOUND_404) }))
                 .bestFor(Method.valueOf(req.method), req.requestURI)
-                .also { invoke(it, req, res) }
+                .also { invoke(it, req, httpRes) }
 
             afters
                 .allFor(Method.valueOf(req.method), req.requestURI)
-                .forEach { invoke(it, req, res) }
+                .forEach { invoke(it, req, httpRes) }
         }catch (e: HaltException) {
-            res.status = e.statusCode
-            res.writer.write(e.message!!)
         }
     }
 
-    private fun invoke(route: Route, req: HttpServletRequest, res: HttpServletResponse) {
-        route.action.handle(HttpRequest(req, PathParams(route.path)), HttpResponse(res))
+    private fun invoke(route: Route, req: HttpServletRequest, res: HttpResponse) {
+        route.action.handle(HttpRequest(req, PathParams(route.path)), res)
     }
 }
