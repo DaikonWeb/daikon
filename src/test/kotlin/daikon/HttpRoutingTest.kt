@@ -84,4 +84,24 @@ class HttpRoutingTest {
                 assertThat(response.text).isEqualTo("Go away")
             }
     }
+
+    @Test
+    fun `nested paths`() {
+        HttpServer()
+            .path("/a") {
+                it
+                    .get("/b") { _, res -> res.write("ab") }
+                    .get("/c") { _, res -> res.write("ac") }
+                    .path("/d") {
+                        it.get("/e") { _, res -> res.write("ade") }
+                    }
+            }
+            .get("/f") { _, res -> res.write("f") }
+            .start().use {
+                assertThat(get("/a/b").text).isEqualTo("ab")
+                assertThat(get("/a/c").text).isEqualTo("ac")
+                assertThat(get("/a/d/e").text).isEqualTo("ade")
+                assertThat(get("/f").text).isEqualTo("f")
+            }
+    }
 }

@@ -6,6 +6,7 @@ import org.eclipse.jetty.servlet.DefaultServlet
 import org.eclipse.jetty.servlet.ServletContextHandler
 import org.eclipse.jetty.servlet.ServletHolder
 import org.eclipse.jetty.util.resource.Resource
+import java.util.*
 
 
 class HttpServer(private val port: Int = 4545) : AutoCloseable {
@@ -15,6 +16,7 @@ class HttpServer(private val port: Int = 4545) : AutoCloseable {
     private val routes = Routing()
     private val befores = Routing()
     private val afters = Routing()
+    private val basePath = mutableListOf("")
 
     fun start(): HttpServer {
         server = Server(port)
@@ -85,13 +87,20 @@ class HttpServer(private val port: Int = 4545) : AutoCloseable {
     }
 
     private fun add(method: Method, path: String, action: RouteAction) {
-        routes.add(Route(method, path, action))
+        routes.add(Route(method, basePath.joinToString(separator = "") + path, action))
     }
 
     fun assets(path: String): HttpServer {
         val servletHolder = ServletHolder(DefaultServlet())
         handler.addServlet(servletHolder, path)
         handler.baseResource = Resource.newResource(HttpServer::class.java.getResource("/assets/"))
+        return this
+    }
+
+    fun path(path: String, nested: (HttpServer) -> Unit): HttpServer {
+        basePath.add(path)
+        nested.invoke(this)
+        basePath.removeAt(basePath.size - 1)
         return this
     }
 }
