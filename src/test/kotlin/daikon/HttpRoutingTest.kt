@@ -2,7 +2,9 @@ package daikon
 
 
 import daikon.Localhost.get
+import daikon.RequestFlow.halt
 import org.assertj.core.api.Assertions.assertThat
+import org.eclipse.jetty.http.HttpStatus.*
 import org.junit.jupiter.api.Test
 
 class HttpRoutingTest {
@@ -68,6 +70,18 @@ class HttpRoutingTest {
             })
             .start().use {
                 assertThat(get("/foo").text).isEqualTo("Hello foo")
+            }
+    }
+
+    @Test
+    fun `halt request`() {
+        HttpServer()
+            .before { _, _ -> halt(UNAUTHORIZED_401, "Go away") }
+            .get("/") { _, res -> res.status(OK_200)}
+            .start().use {
+                val response = get("/")
+                assertThat(response.statusCode).isEqualTo(UNAUTHORIZED_401)
+                assertThat(response.text).isEqualTo("Go away")
             }
     }
 }

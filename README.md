@@ -7,6 +7,7 @@ The main goals are:
 * Can run multiple instances of HTTP server at the same time
 
 ## How to add Daikon to your project
+[![](https://jitpack.io/v/fracassi-marco/daikon.svg)](https://jitpack.io/#fracassi-marco/daikon)
 
 ### Gradle
 - Add JitPack in your root build.gradle at the end of repositories:
@@ -18,7 +19,7 @@ repositories {
 ```
 - Add the dependency
 ```
-implementation 'com.github.fracassi-marco:daikon:0.4.2'
+implementation 'com.github.fracassi-marco:daikon:0.4.3'
 ```
 
 ### Maven
@@ -36,7 +37,7 @@ implementation 'com.github.fracassi-marco:daikon:0.4.2'
 <dependency>
     <groupId>com.github.fracassi-marco</groupId>
     <artifactId>daikon</artifactId>
-    <version>0.4.2</version>
+    <version>0.4.3</version>
 </dependency>
 ```
 

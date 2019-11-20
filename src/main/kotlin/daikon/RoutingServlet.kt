@@ -18,18 +18,23 @@ class RoutingServlet(
         req as HttpServletRequest
         res as HttpServletResponse
 
-        befores
-            .allFor(Method.valueOf(req.method), req.requestURI)
-            .forEach { invoke(it, req, res) }
+        try {
+            befores
+                .allFor(Method.valueOf(req.method), req.requestURI)
+                .forEach { invoke(it, req, res) }
 
-        routes
-            .default(Route(ANY, "/*", DummyRouteAction { _, r -> r.status(NOT_FOUND_404) }))
-            .bestFor(Method.valueOf(req.method), req.requestURI)
-            .also { invoke(it, req, res) }
+            routes
+                .default(Route(ANY, "/*", DummyRouteAction { _, r -> r.status(NOT_FOUND_404) }))
+                .bestFor(Method.valueOf(req.method), req.requestURI)
+                .also { invoke(it, req, res) }
 
-        afters
-            .allFor(Method.valueOf(req.method), req.requestURI)
-            .forEach { invoke(it, req, res) }
+            afters
+                .allFor(Method.valueOf(req.method), req.requestURI)
+                .forEach { invoke(it, req, res) }
+        }catch (e: HaltException) {
+            res.status = e.statusCode
+            res.writer.write(e.message!!)
+        }
     }
 
     private fun invoke(route: Route, req: HttpServletRequest, res: HttpServletResponse) {
