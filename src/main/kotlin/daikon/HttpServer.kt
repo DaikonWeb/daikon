@@ -90,7 +90,7 @@ class HttpServer(private val port: Int = 4545) : AutoCloseable {
     }
 
     fun after(path: String = "/*", action: (Request, Response) -> Unit): HttpServer {
-        afters.add(Route(ANY, path, DummyRouteAction(action)))
+        afters.add(Route(ANY, joinPaths(path), DummyRouteAction(action)))
         return this
     }
 
