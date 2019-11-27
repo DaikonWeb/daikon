@@ -5,7 +5,7 @@ The main goals are:
 * Use a framework easy to test
 * Build a simple web application in less then 5 minutes
 * Can run multiple instances of HTTP server at the same time
-* Deploy application in container, with server start time less then 100ms
+* Deploy application in container, with server start time less than 100ms
 
 ## How to add Daikon to your project
 [![](https://jitpack.io/v/fracassi-marco/daikon.svg)](https://jitpack.io/#fracassi-marco/daikon)
