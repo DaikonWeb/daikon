@@ -53,4 +53,17 @@ class HooksTest {
                 assertThat(response.text).isEqualTo("Bye Bob")
             }
     }
+
+    @Test
+    fun `before supports path`() {
+        HttpServer()
+            .path("/baz") {
+                before("/bar") { _, res -> res.write("Hello") }
+            }
+            .get("/baz/bar") { _, res -> res.write(" Bob") }
+            .start().use {
+                val response = get("/baz/bar")
+                assertThat(response.text).isEqualTo("Hello Bob")
+            }
+    }
 }

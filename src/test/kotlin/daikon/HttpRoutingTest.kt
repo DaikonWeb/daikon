@@ -89,12 +89,11 @@ class HttpRoutingTest {
     fun `nested paths`() {
         HttpServer()
             .path("/a") {
-                it
-                    .get("/b") { _, res -> res.write("ab") }
-                    .get("/c") { _, res -> res.write("ac") }
-                    .path("/d") {
-                        it.get("/e") { _, res -> res.write("ade") }
-                    }
+                get("/b") { _, res -> res.write("ab") }
+                get("/c") { _, res -> res.write("ac") }
+                path("/d") {
+                    get("/e") { _, res -> res.write("ade") }
+                }
             }
             .get("/f") { _, res -> res.write("f") }
             .start().use {

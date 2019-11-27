@@ -85,7 +85,7 @@ class HttpServer(private val port: Int = 4545) : AutoCloseable {
     }
 
     fun before(path: String = "/*", action: (Request, Response) -> Unit): HttpServer {
-        befores.add(Route(ANY, path, DummyRouteAction(action)))
+        befores.add(Route(ANY, joinPaths(path), DummyRouteAction(action)))
         return this
     }
 
@@ -101,7 +101,7 @@ class HttpServer(private val port: Int = 4545) : AutoCloseable {
         return this
     }
 
-    fun path(path: String, nested: (HttpServer) -> Unit): HttpServer {
+    fun path(path: String, nested: HttpServer.() -> Unit): HttpServer {
         basePath.add(path)
         nested.invoke(this)
         basePath.removeAt(basePath.size - 1)
@@ -109,8 +109,10 @@ class HttpServer(private val port: Int = 4545) : AutoCloseable {
     }
 
     private fun add(method: Method, path: String, action: RouteAction) {
-        routes.add(Route(method, basePath.joinToString(separator = "") + path, action))
+        routes.add(Route(method, joinPaths(path), action))
     }
+
+    private fun joinPaths(path: String) = basePath.joinToString(separator = "") + path
 
     private fun disableJettyLog() {
         Log.getProperties().setProperty("org.eclipse.jetty.util.log.announce", "false")
