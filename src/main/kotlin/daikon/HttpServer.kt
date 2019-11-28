@@ -39,8 +39,8 @@ class HttpServer(private val port: Int = 4545) : AutoCloseable {
         server.stop()
     }
 
-    fun join(): HttpServer {
-        start()
+    fun join(initializeActions: HttpServer.() -> Unit = {}): HttpServer {
+        start(initializeActions)
         server.join()
         return this
     }
