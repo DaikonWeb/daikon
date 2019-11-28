@@ -15,4 +15,14 @@ class HttpServerTest {
                 assertThat(response.statusCode).isEqualTo(200)
             }
     }
+
+    @Test
+    fun `start and stop passing actions as block`() {
+        HttpServer().start {
+            get("/", NopAction())
+        }.use {
+            val response = get("/")
+            assertThat(response.statusCode).isEqualTo(200)
+        }
+    }
 }

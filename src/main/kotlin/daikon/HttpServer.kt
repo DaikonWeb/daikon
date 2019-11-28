@@ -23,7 +23,8 @@ class HttpServer(private val port: Int = 4545) : AutoCloseable {
     private val afters = Routing()
     private val basePath = mutableListOf("")
 
-    fun start(): HttpServer {
+    fun start(initializeActions: HttpServer.() -> Unit = {}): HttpServer {
+        initializeActions()
         val beginStarting = now()
         server = Server(port)
         handler.addServlet(ServletHolder(RoutingServlet(befores, routes, afters)), "/*")
