@@ -9,7 +9,7 @@ class PathParamsTest {
     fun `replace placeholder with stars`() {
         val pathParams = PathParams("/foo/:one/bar/:two/baz")
 
-        assertThat(pathParams.path()).isEqualTo("/foo/*/bar/*/baz")
+        assertThat(pathParams.path()).isEqualTo("/foo/[^/]+/bar/[^/]+/baz")
     }
 
     @Test

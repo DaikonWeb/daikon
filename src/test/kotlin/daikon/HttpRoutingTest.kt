@@ -43,7 +43,7 @@ class HttpRoutingTest {
     @Test
     fun `mix of static file and dynamic routes`() {
         HttpServer()
-            .get("/bar/2") {_, res -> res.write("Hello")}
+            .get("/bar/2") { _, res -> res.write("Hello") }
             .assets("/foo/*")
             .start().use {
                 assertThat(get("/foo/style.css").text).isEqualTo("body {}")
@@ -54,7 +54,7 @@ class HttpRoutingTest {
     @Test
     fun `custom port`() {
         HttpServer(4546)
-            .get("/*") {_, res -> res.write("Hello")}
+            .get("/*") { _, res -> res.write("Hello") }
             .start().use {
                 assertThat(khttp.get("http://localhost:4546/").text).isEqualTo("Hello")
             }
@@ -63,7 +63,7 @@ class HttpRoutingTest {
     @Test
     fun `route action`() {
         HttpServer()
-            .get("/foo", object: RouteAction {
+            .get("/foo", object : RouteAction {
                 override fun handle(request: Request, response: Response) {
                     response.write("Hello foo")
                 }
@@ -77,7 +77,7 @@ class HttpRoutingTest {
     fun `halt request`() {
         HttpServer()
             .before { _, res -> halt(res, UNAUTHORIZED_401, "Go away") }
-            .get("/") { _, res -> res.status(OK_200)}
+            .get("/") { _, res -> res.status(OK_200) }
             .start().use {
                 val response = get("/")
                 assertThat(response.statusCode).isEqualTo(UNAUTHORIZED_401)
@@ -102,5 +102,15 @@ class HttpRoutingTest {
                 assertThat(get("/a/d/e").text).isEqualTo("ade")
                 assertThat(get("/f").text).isEqualTo("f")
             }
+    }
+
+    @Test
+    fun `path params`() {
+        HttpServer().start() {
+            get("/:foo") { req, res -> res.write("Hello ${req.param(":foo")}") }
+        }.use {
+            assertThat(get("/a").text).isEqualTo("Hello a")
+            assertThat(get("/a/b").statusCode).isEqualTo(NOT_FOUND_404)
+        }
     }
 }

@@ -2,7 +2,7 @@ package daikon
 
 class PathParams(private val path: String) {
     fun path(): String {
-        return path.split("/").joinToString(separator = "/") { if (it.startsWith(":")) "*" else it }
+        return path.split("/").joinToString(separator = "/") { if (it.startsWith(":")) "[^/]+" else it }
     }
 
     fun valueOf(ulrPath: String): Map<String, String> {
