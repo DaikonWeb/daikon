@@ -1,6 +1,6 @@
 # Daikon
 
-![Daikon](./logo.svg =200x)
+![Daikon](./logo.svg)
 
 Daikon is a simple and minimal framework for creating web applications in Kotlin with minimal effort.
 The main goals are:
