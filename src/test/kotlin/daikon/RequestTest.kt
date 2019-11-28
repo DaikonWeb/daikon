@@ -119,4 +119,14 @@ class RequestTest {
                 assertThat(get("/").statusCode).isEqualTo(INTERNAL_SERVER_ERROR_500)
             }
     }
+
+    @Test
+    fun method() {
+        HttpServer()
+            .post("/*") { req, res -> res.write("${req.method()}") }
+            .start()
+            .use {
+                assertThat(post("/").text).isEqualTo("POST")
+            }
+    }
 }

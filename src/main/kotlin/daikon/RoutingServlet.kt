@@ -2,6 +2,7 @@ package daikon
 
 import daikon.Method.ANY
 import org.eclipse.jetty.http.HttpStatus.NOT_FOUND_404
+import org.eclipse.jetty.http.HttpStatus.OK_200
 import javax.servlet.GenericServlet
 import javax.servlet.ServletRequest
 import javax.servlet.ServletResponse
@@ -24,7 +25,7 @@ class RoutingServlet(
                 .forEach { invoke(it, req, httpRes) }
 
             routes
-                .default(Route(ANY, "/*", DummyRouteAction { _, r -> r.status(NOT_FOUND_404) }))
+                .default(Route(ANY, "ignore", DefaultRouteAction()))
                 .bestFor(Method.valueOf(req.method), req.requestURI)
                 .also { invoke(it, req, httpRes) }
 

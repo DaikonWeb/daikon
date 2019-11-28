@@ -1,5 +1,6 @@
 package daikon
 
+import com.nhaarman.mockitokotlin2.mock
 import daikon.Method.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -80,5 +81,27 @@ class RoutingTest {
         val all = Routing().add(routes[0]).add(routes[1]).add(routes[2]).allFor(GET, "/foo/bar")
 
         assertThat(all).isEqualTo(routes)
+    }
+
+    @Test
+    fun `override route`() {
+        val routeActionA: RouteAction = mock()
+        val routeActionB: RouteAction = mock()
+        val routing = Routing()
+            .add(Route(GET, "/", routeActionA))
+            .add(Route(GET, "/", routeActionB))
+
+        assertThat(routing.bestFor(GET, "/").action).isEqualTo(routeActionB)
+    }
+
+    @Test
+    fun `use most specific route`() {
+        val routeActionA: RouteAction = mock()
+        val routeActionB: RouteAction = mock()
+        val routing = Routing()
+            .add(Route(GET, "/", routeActionA))
+            .add(Route(GET, "/*", routeActionB))
+
+        assertThat(routing.bestFor(GET, "/").action).isEqualTo(routeActionA)
     }
 }

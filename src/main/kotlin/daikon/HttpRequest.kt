@@ -4,7 +4,12 @@ import javax.servlet.http.HttpServletRequest
 
 class HttpRequest(private val request: HttpServletRequest, private val pathParams: PathParams) : Request {
     override fun <T> attribute(key: String): T {
+        @Suppress("UNCHECKED_CAST")
         return request.getAttribute(key)!! as T
+    }
+
+    override fun method(): Method {
+        return Method.valueOf(request.method)
     }
 
     override fun <T> attribute(key: String, value: T) {
@@ -28,6 +33,6 @@ class HttpRequest(private val request: HttpServletRequest, private val pathParam
     }
 
     override fun param(name: String): String {
-         return request.getParameter(name) ?: pathParams.valueOf(path())[name]!!
+         return request.getParameter(name) ?: pathParams.valueOf(path()).getValue(name)
     }
 }

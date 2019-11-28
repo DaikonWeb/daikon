@@ -1,5 +1,7 @@
 # Daikon
 
+![Daikon](./logo.svg =200x)
+
 Daikon is a simple and minimal framework for creating web applications in Kotlin with minimal effort.
 The main goals are:
 * Use a framework easy to test
@@ -20,7 +22,7 @@ repositories {
 ```
 - Add the dependency
 ```
-implementation 'com.github.fracassi-marco:daikon:0.4.7'
+implementation 'com.github.fracassi-marco:daikon:0.5'
 ```
 
 ### Maven
@@ -38,7 +40,7 @@ implementation 'com.github.fracassi-marco:daikon:0.4.7'
 <dependency>
     <groupId>com.github.fracassi-marco</groupId>
     <artifactId>daikon</artifactId>
-    <version>0.4.7</version>
+    <version>0.5</version>
 </dependency>
 ```
 

@@ -14,7 +14,8 @@ class Routing {
     fun bestFor(method: Method, path: String): Route {
         return filterBy(method)
             .filter { match(it, path) }
-            .maxBy { it.path.length }
+            .asReversed()
+            .maxBy { if (exact(it, path)) 1000 * it.path.length else 1 * it.path.length }
             ?:defaultRoute
     }
 

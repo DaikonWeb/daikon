@@ -8,4 +8,5 @@ interface Request {
     fun path(): String
     fun <T> attribute(key: String, value: T)
     fun <T> attribute(key: String) : T
+    fun method(): Method
 }
