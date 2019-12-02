@@ -10,7 +10,7 @@ The main goals are:
 * Deploy application in container, with server start time less than 100ms
 
 ## How to add Daikon to your project
-[![](https://jitpack.io/v/fracassi-marco/daikon.svg)](https://jitpack.io/#fracassi-marco/daikon)
+[![](https://jitpack.io/v/daikonweb/daikon.svg)](https://jitpack.io/#daikonweb/daikon)
 
 ### Gradle
 - Add JitPack in your root build.gradle at the end of repositories:
