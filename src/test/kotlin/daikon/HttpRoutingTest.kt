@@ -106,9 +106,9 @@ class HttpRoutingTest {
 
     @Test
     fun `path params`() {
-        HttpServer().start() {
+        HttpServer {
             get("/:foo") { req, res -> res.write("Hello ${req.param(":foo")}") }
-        }.use {
+        }.start().use {
             assertThat(get("/a").text).isEqualTo("Hello a")
             assertThat(get("/a/b").statusCode).isEqualTo(NOT_FOUND_404)
         }

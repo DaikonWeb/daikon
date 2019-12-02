@@ -10,11 +10,7 @@ import org.eclipse.jetty.util.resource.Resource
 import java.time.LocalDateTime.now
 import java.time.temporal.ChronoUnit.MILLIS
 
-class HttpServer(private val port: Int = 4545) : AutoCloseable {
-
-    init {
-        disableJettyLog()
-    }
+class HttpServer(private val port: Int = 4545, initializeActions: HttpServer.() -> Unit = {}) : AutoCloseable {
 
     private lateinit var server: Server
     private val handler = ServletContextHandler()
@@ -23,8 +19,12 @@ class HttpServer(private val port: Int = 4545) : AutoCloseable {
     private val afters = Routing()
     private val basePath = mutableListOf("")
 
-    fun start(initializeActions: HttpServer.() -> Unit = {}): HttpServer {
+    init {
         initializeActions()
+        disableJettyLog()
+    }
+
+    fun start(): HttpServer {
         val beginStarting = now()
         server = Server(port)
         handler.addServlet(ServletHolder(RoutingServlet(befores, routes, afters)), "/*")
@@ -39,8 +39,8 @@ class HttpServer(private val port: Int = 4545) : AutoCloseable {
         server.stop()
     }
 
-    fun join(initializeActions: HttpServer.() -> Unit = {}): HttpServer {
-        start(initializeActions)
+    fun join(): HttpServer {
+        start()
         server.join()
         return this
     }
