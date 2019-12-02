@@ -39,12 +39,6 @@ class HttpServer(private val port: Int = 4545, initializeActions: HttpServer.() 
         server.stop()
     }
 
-    fun join(): HttpServer {
-        start()
-        server.join()
-        return this
-    }
-
     fun get(path: String, action: (Request, Response) -> Unit): HttpServer {
         get(path, DummyRouteAction(action))
         return this
