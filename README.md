@@ -22,7 +22,7 @@ repositories {
 ```
 - Add the dependency
 ```
-implementation 'com.github.fracassi-marco:daikon:0.5.2'
+implementation 'com.github.DaikonWeb:daikon:0.5.2'
 ```
 
 ### Maven
@@ -38,7 +38,7 @@ implementation 'com.github.fracassi-marco:daikon:0.5.2'
 - Add the dependency
 ```
 <dependency>
-    <groupId>com.github.fracassi-marco</groupId>
+    <groupId>com.github.DaikonWeb</groupId>
     <artifactId>daikon</artifactId>
     <version>0.5.2</version>
 </dependency>
