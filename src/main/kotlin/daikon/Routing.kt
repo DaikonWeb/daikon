@@ -13,11 +13,15 @@ class Routing {
 
     fun bestFor(method: Method, path: String): Route {
         return filterBy(method)
-            .filter { match(it, path) }
-            .asReversed()
-            .maxBy { if (exact(it, path)) 1000 * it.path.length else 1 * it.path.length }
-            ?:defaultRoute
+                .filter { match(it, path) }
+                .asReversed()
+                .chooseFrom(path)
+                ?: defaultRoute
     }
+
+    private fun List<Route>.chooseFrom(path: String) = maxBy { route -> route.path.length * matchFactor(route, path) }
+
+    private fun matchFactor(route: Route, path: String) = if (exact(route, path)) 1000 else 1
 
     private fun match(it: Route, path: String) = exact(it, path) || approximate(it, path)
 
@@ -35,7 +39,7 @@ class Routing {
         return route.path == path
     }
 
-    fun add(route: Route) : Routing {
+    fun add(route: Route): Routing {
         routes.add(route)
         return this
     }
