@@ -6,7 +6,6 @@ import com.nhaarman.mockitokotlin2.whenever
 import daikon.Method.GET
 import org.eclipse.jetty.http.HttpStatus.NOT_FOUND_404
 import org.eclipse.jetty.http.HttpStatus.OK_200
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.contains
 
