@@ -3,6 +3,7 @@ package daikon
 import daikon.Localhost.get
 import org.junit.jupiter.api.Test
 import org.assertj.core.api.Assertions.assertThat
+import org.eclipse.jetty.http.HttpStatus.OK_200
 
 class HttpServerTest {
 
@@ -12,7 +13,7 @@ class HttpServerTest {
             .get("/", NopAction())
             .start().use {
                 val response = get("/")
-                assertThat(response.statusCode).isEqualTo(200)
+                assertThat(response.statusCode).isEqualTo(OK_200)
             }
     }
 
@@ -22,7 +23,7 @@ class HttpServerTest {
             get("/", NopAction())
         }.use {
             val response = get("/")
-            assertThat(response.statusCode).isEqualTo(200)
+            assertThat(response.statusCode).isEqualTo(OK_200)
         }
     }
 }
