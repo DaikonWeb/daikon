@@ -14,6 +14,11 @@ class HttpResponse(private val response: HttpServletResponse) : Response {
         return writer.toString()
     }
 
+    override fun redirect(path: String, status: Int) {
+        status(status)
+        header("Location", path)
+    }
+
     override fun content(type: String) {
        response.contentType = type
     }

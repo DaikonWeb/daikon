@@ -3,6 +3,8 @@ package daikon
 import daikon.Localhost.get
 import daikon.Localhost.post
 import org.assertj.core.api.Assertions.assertThat
+import org.eclipse.jetty.http.HttpStatus.CREATED_201
+import org.eclipse.jetty.http.HttpStatus.MOVED_PERMANENTLY_301
 import org.junit.jupiter.api.Test
 
 class ResponseTest {
@@ -10,9 +12,9 @@ class ResponseTest {
     @Test
     fun `status code`() {
         HttpServer()
-            .any("/") { _, res -> res.status(201) }
+            .any("/") { _, res -> res.status(CREATED_201) }
             .start().use {
-                assertThat(get("/").statusCode).isEqualTo(201)
+                assertThat(get("/").statusCode).isEqualTo(CREATED_201)
             }
     }
 
@@ -47,6 +49,26 @@ class ResponseTest {
             .start().use {
                 get("/")
                 assertThat(body).isEqualTo("Hi Bob")
+            }
+    }
+
+    @Test
+    fun `redirect to relative path`() {
+        HttpServer()
+            .any("/foo") { _, res -> res.redirect("/bar", MOVED_PERMANENTLY_301) }
+            .any("/bar") { _, res -> res.write("Hello") }
+            .start().use {
+                assertThat(get("/foo").text).isEqualTo("Hello")
+            }
+    }
+
+    @Test
+    fun `redirect to absolute path`() {
+        HttpServer()
+            .any("/foo") { _, res -> res.redirect("http://localhost:4545/bar") }
+            .any("/bar") { _, res -> res.write("Hello") }
+            .start().use {
+                assertThat(get("/foo").text).isEqualTo("Hello")
             }
     }
 }
