@@ -8,7 +8,7 @@ class DefaultRouteAction : RouteAction {
     override fun handle(request: Request, response: Response) {
         if (request.method() == GET && request.path() == "/") {
             response.status(OK_200)
-            response.content("text/html")
+            response.type("text/html")
             response.write(html())
         } else {
             response.status(NOT_FOUND_404)

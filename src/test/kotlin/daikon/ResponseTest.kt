@@ -1,7 +1,6 @@
 package daikon
 
 import daikon.Localhost.get
-import daikon.Localhost.post
 import org.assertj.core.api.Assertions.assertThat
 import org.eclipse.jetty.http.HttpStatus.CREATED_201
 import org.eclipse.jetty.http.HttpStatus.MOVED_PERMANENTLY_301
@@ -21,7 +20,7 @@ class ResponseTest {
     @Test
     fun `content type`() {
         HttpServer()
-            .any("/") { _, res -> res.content("application/json") }
+            .any("/") { _, res -> res.type("application/json") }
             .start().use {
                 assertThat(get("/").headers["Content-Type"]).isEqualTo("application/json")
             }

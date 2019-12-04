@@ -29,7 +29,7 @@ class DefaultRouteActionTest {
         DefaultRouteAction().handle(request, response)
 
         verify(response).status(OK_200)
-        verify(response).content("text/html")
+        verify(response).type("text/html")
         verify(response).write(contains("You are eating a Daikon!!"))
     }
 }

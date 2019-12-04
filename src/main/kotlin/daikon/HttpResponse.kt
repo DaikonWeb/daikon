@@ -19,8 +19,8 @@ class HttpResponse(private val response: HttpServletResponse) : Response {
         header("Location", path)
     }
 
-    override fun content(type: String) {
-       response.contentType = type
+    override fun type(contentType: String) {
+       response.contentType = contentType
     }
 
     override fun status(code: Int) {
