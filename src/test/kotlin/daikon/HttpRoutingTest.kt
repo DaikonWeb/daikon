@@ -113,4 +113,15 @@ class HttpRoutingTest {
             assertThat(get("/a/b").statusCode).isEqualTo(NOT_FOUND_404)
         }
     }
+
+    @Test
+    fun `error handling`() {
+        HttpServer {
+            get("/foo") { _, _ -> throw RuntimeException() }
+            get("/bar") { _, res -> res.write("Hello")}
+        }.start().use {
+            assertThat(get("/foo").statusCode).isEqualTo(INTERNAL_SERVER_ERROR_500)
+            assertThat(get("/bar").text).isEqualTo("Hello")
+        }
+    }
 }
