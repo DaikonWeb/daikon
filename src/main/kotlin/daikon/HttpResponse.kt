@@ -1,6 +1,9 @@
 package daikon
 
 import java.io.StringWriter
+import java.nio.charset.Charset
+import java.nio.charset.StandardCharsets
+import java.nio.charset.StandardCharsets.UTF_8
 import javax.servlet.http.HttpServletResponse
 
 class HttpResponse(private val response: HttpServletResponse) : Response {
@@ -29,6 +32,7 @@ class HttpResponse(private val response: HttpServletResponse) : Response {
 
     override fun write(text: String) {
         writer.write(text)
+        response.characterEncoding = UTF_8.name()
         response.writer.write(text)
     }
 }
