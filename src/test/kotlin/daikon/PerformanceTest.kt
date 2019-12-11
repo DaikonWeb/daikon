@@ -1,19 +1,94 @@
 package daikon
 
+import daikon.Localhost.get
+import kotlinx.coroutines.*
+import org.assertj.core.api.AbstractIntegerAssert
 import org.assertj.core.api.Assertions.assertThat
+import org.eclipse.jetty.http.HttpStatus.OK_200
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit.MILLIS
+import kotlin.random.Random
 
 class PerformanceTest {
 
     @Test
-    fun `start in less then 400 ms`() {
-        val start = LocalDateTime.now()
-        HttpServer().start().use {
-            val stop = LocalDateTime.now()
-            val elapsedMillis = start.until(stop, MILLIS)
-            assertThat(elapsedMillis).isLessThan(400)
+    fun `start time benchmark`() {
+        val measures = mutableListOf<Long>()
+
+        for (i in 1..1000) {
+            startServer().use {
+                measures.add(elapsedMillis {
+                    assertThat(get("/?a=${Random.nextInt()}").statusCode).isEqualTo(OK_200)
+                })
+            }
         }
+
+        printResults(measures)
+        assertThat(measures.average()).isLessThan(10.0)
+        //Jetty #1000 average: 2.226 - min: 1 - max: 187
+    }
+
+    @Test
+    fun `sequential requests response time benchmark`() {
+        val measures = mutableListOf<Long>()
+
+        startServer().use {
+            for (i in 1..1000) {
+                measures.add(elapsedMillis {
+                    assertThat(get("/?a=${Random.nextInt()}").statusCode).isEqualTo(OK_200)
+                })
+            }
+        }
+
+        printResults(measures)
+        assertThat(measures.average()).isLessThan(10.0)
+        //Jetty #1000 average: 1.047 - min: 0 - max: 176
+    }
+
+    @Test
+    fun `parallel requests response time benchmark`() {
+        val runs = mutableListOf<Deferred<List<Long>>>()
+
+        startServer().use {
+            for (i in 1..1000) {
+                runs.add(GlobalScope.async {
+                    val results = mutableListOf<Long>()
+                    for (j in 1..1000) {
+                        results.add(elapsedMillis {
+                            assertThat(get("/?a=${Random.nextInt()}").statusCode).isEqualTo(OK_200)
+                        })
+                    }
+
+                    results
+                })
+            }
+
+            runBlocking {
+                val measures = mutableListOf<Long>()
+                runs.map { measures.addAll(it.await()) }
+                printResults(measures)
+                assertThat(measures.average()).isLessThan(10.0)
+            }
+        }
+
+        //Jetty #1000000 average: 0.222233 - min: 0 - max: 208
+    }
+
+    private fun printResults(measures: MutableList<Long>) {
+        println("#${measures.size} average: ${measures.average()} - min: ${measures.min()} - max: ${measures.max()}")
+    }
+
+    private fun startServer(): HttpServer {
+        return HttpServer()
+            .get("/") { req, res -> res.write("Hello ${req.param("a")}") }
+            .start()
+    }
+
+    private fun elapsedMillis(function: () -> AbstractIntegerAssert<*>): Long {
+        val start = LocalDateTime.now()
+        function.invoke()
+        val stop = LocalDateTime.now()
+        return start.until(stop, MILLIS)
     }
 }

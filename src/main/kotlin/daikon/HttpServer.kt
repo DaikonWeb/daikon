@@ -12,17 +12,17 @@ import java.time.temporal.ChronoUnit.MILLIS
 
 class HttpServer(private val port: Int = 4545, initializeActions: HttpServer.() -> Unit = {}) : AutoCloseable {
 
+    init {
+        initializeActions()
+        disableJettyLog()
+    }
+
     private lateinit var server: Server
     private val handler = ServletContextHandler()
     private val routes = Routing()
     private val befores = Routing()
     private val afters = Routing()
     private val basePath = mutableListOf("")
-
-    init {
-        initializeActions()
-        disableJettyLog()
-    }
 
     fun start(): HttpServer {
         val beginStarting = now()
