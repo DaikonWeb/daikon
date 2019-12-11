@@ -51,10 +51,10 @@ class PerformanceTest {
         val runs = mutableListOf<Deferred<List<Long>>>()
 
         startServer().use {
-            for (i in 1..1000) {
+            for (i in 1..100) {
                 runs.add(GlobalScope.async {
                     val results = mutableListOf<Long>()
-                    for (j in 1..1000) {
+                    for (j in 1..100) {
                         results.add(elapsedMillis {
                             assertThat(get("/?a=${Random.nextInt()}").statusCode).isEqualTo(OK_200)
                         })
