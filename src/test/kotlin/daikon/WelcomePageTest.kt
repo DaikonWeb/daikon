@@ -15,13 +15,4 @@ class WelcomePageTest {
         }
     }
 
-    @Test
-    fun `override welcome page`() {
-        HttpServer {
-            get("/") { _, res -> res.status(INTERNAL_SERVER_ERROR_500) }
-        }.start().use {
-            val response = Localhost.get("/")
-            assertThat(response.statusCode).isEqualTo(INTERNAL_SERVER_ERROR_500)
-        }
-    }
 }

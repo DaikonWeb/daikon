@@ -103,25 +103,4 @@ class HttpRoutingTest {
                 assertThat(get("/f").text).isEqualTo("f")
             }
     }
-
-    @Test
-    fun `path params`() {
-        HttpServer {
-            get("/:foo") { req, res -> res.write("Hello ${req.param(":foo")}") }
-        }.start().use {
-            assertThat(get("/a").text).isEqualTo("Hello a")
-            assertThat(get("/a/b").statusCode).isEqualTo(NOT_FOUND_404)
-        }
-    }
-
-    @Test
-    fun `error handling`() {
-        HttpServer {
-            get("/foo") { _, _ -> throw RuntimeException() }
-            get("/bar") { _, res -> res.write("Hello")}
-        }.start().use {
-            assertThat(get("/foo").statusCode).isEqualTo(INTERNAL_SERVER_ERROR_500)
-            assertThat(get("/bar").text).isEqualTo("Hello")
-        }
-    }
 }
