@@ -10,15 +10,15 @@ import org.eclipse.jetty.util.resource.Resource
 import java.time.LocalDateTime.now
 import java.time.temporal.ChronoUnit.MILLIS
 
-class HttpServer(private val port: Int = 4545) : AutoCloseable {
+class HttpServer(private val port: Int = 4545, initializeActions: HttpServer.() -> Unit = {}) : AutoCloseable {
 
     private val routes = Routing()
     private val befores = Routing()
     private val afters = Routing()
-    private val basePath = ArrayList<String>()
+    private val basePath = mutableListOf("")
 
     init {
-        basePath.add("")
+        initializeActions()
         disableJettyLog()
     }
 

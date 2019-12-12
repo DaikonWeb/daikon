@@ -3,7 +3,7 @@ package daikon
 import daikon.Method.ANY
 
 class Routing {
-    private lateinit var defaultRoute: Route
+    private var defaultRoute = Route(ANY, "/*", DummyRouteAction { _, _ -> })
     private val routes = mutableListOf<Route>()
 
     fun default(route: Route): Routing {
