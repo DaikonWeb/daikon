@@ -55,6 +55,10 @@ HttpServer()
     }
 ```
 
+## Resources
+* Documentation: https://daikonweb.github.io
+* Examples: https://github.com/DaikonWeb/daikon-examples
+
 ## Authors
 
 * **[Marco Fracassi](https://github.com/fracassi-marco)**
