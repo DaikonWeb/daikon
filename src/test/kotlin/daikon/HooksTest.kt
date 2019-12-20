@@ -79,4 +79,34 @@ class HooksTest {
                 assertThat(response.text).isEqualTo("Hello Bob")
             }
     }
+
+    @Test
+    fun `do action after start`() {
+        var called = false
+        HttpServer()
+            .afterStart {
+                assertThat(get("/").text).isEqualTo("Hello")
+                called = true
+            }
+            .get("/") { _, res -> res.write("Hello")}
+            .start()
+            .close()
+
+        assertThat(called).isTrue()
+    }
+
+    @Test
+    fun `do action before stop`() {
+        var called = false
+        HttpServer()
+            .beforeStop {
+                assertThat(get("/").text).isEqualTo("Hello")
+                called = true
+            }
+            .get("/") { _, res -> res.write("Hello")}
+            .start()
+            .close()
+
+        assertThat(called).isTrue()
+    }
 }

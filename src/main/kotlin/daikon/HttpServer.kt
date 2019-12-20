@@ -13,8 +13,10 @@ import java.time.temporal.ChronoUnit.MILLIS
 class HttpServer(private val port: Int = 4545, initializeActions: HttpServer.() -> Unit = {}) : AutoCloseable {
 
     private val routes = Routing()
-    private val befores = Routing()
-    private val afters = Routing()
+    private val beforeActions = Routing()
+    private val afterActions = Routing()
+    private val afterStartActions = mutableListOf<() -> Unit>()
+    private val beforeStopActions = mutableListOf<() -> Unit>()
     private val basePath = mutableListOf("")
 
     init {
@@ -28,15 +30,17 @@ class HttpServer(private val port: Int = 4545, initializeActions: HttpServer.() 
     fun start(): HttpServer {
         val beginStarting = now()
         server = Server(port)
-        handler.addServlet(ServletHolder(RoutingServlet(befores, routes, afters)), "/*")
+        handler.addServlet(ServletHolder(RoutingServlet(beforeActions, routes, afterActions)), "/*")
         server.handler = handler
         server.start()
         val endStarting = now()
         println("Server up and running on port $port in ${beginStarting.until(endStarting, MILLIS)}ms")
+        afterStartActions.forEach { it.invoke() }
         return this
     }
 
     override fun close() {
+        beforeStopActions.forEach { it.invoke() }
         server.stop()
     }
 
@@ -81,12 +85,12 @@ class HttpServer(private val port: Int = 4545, initializeActions: HttpServer.() 
     }
 
     fun before(path: String = "/*", action: (Request, Response) -> Unit): HttpServer {
-        befores.add(Route(ANY, joinPaths(path), DummyRouteAction(action)))
+        beforeActions.add(Route(ANY, joinPaths(path), DummyRouteAction(action)))
         return this
     }
 
     fun after(path: String = "/*", action: (Request, Response) -> Unit): HttpServer {
-        afters.add(Route(ANY, joinPaths(path), DummyRouteAction(action)))
+        afterActions.add(Route(ANY, joinPaths(path), DummyRouteAction(action)))
         return this
     }
 
@@ -113,5 +117,15 @@ class HttpServer(private val port: Int = 4545, initializeActions: HttpServer.() 
     private fun disableJettyLog() {
         Log.getProperties().setProperty("org.eclipse.jetty.util.log.announce", "false")
         Log.getProperties().setProperty("org.eclipse.jetty.LEVEL", "OFF")
+    }
+
+    fun afterStart(function: () -> Unit): HttpServer {
+        afterStartActions.add(function)
+        return this
+    }
+
+    fun beforeStop(function: () -> Unit): HttpServer {
+        beforeStopActions.add(function)
+        return this
     }
 }
