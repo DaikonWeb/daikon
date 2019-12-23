@@ -13,10 +13,11 @@ class DefaultRouteActionTest {
 
     private val request: Request = mock()
     private val response: Response = mock()
+    private val context: Context = mock()
 
     @Test
     fun `page not found`() {
-        DefaultRouteAction().handle(request, response)
+        DefaultRouteAction().handle(request, response, context)
 
         verify(response).status(NOT_FOUND_404)
     }
@@ -26,7 +27,7 @@ class DefaultRouteActionTest {
         whenever(request.method()).thenReturn(GET)
         whenever(request.path()).thenReturn("/")
 
-        DefaultRouteAction().handle(request, response)
+        DefaultRouteAction().handle(request, response, context)
 
         verify(response).status(OK_200)
         verify(response).type("text/html")

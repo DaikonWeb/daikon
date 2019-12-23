@@ -1,8 +1,6 @@
 package daikon
 
 import daikon.Method.ANY
-import org.eclipse.jetty.http.HttpStatus.NOT_FOUND_404
-import org.eclipse.jetty.http.HttpStatus.OK_200
 import javax.servlet.GenericServlet
 import javax.servlet.ServletRequest
 import javax.servlet.ServletResponse
@@ -12,7 +10,8 @@ import javax.servlet.http.HttpServletResponse
 class RoutingServlet(
     private val befores: Routing,
     private val routes: Routing,
-    private val afters: Routing
+    private val afters: Routing,
+    private val context: Context
 ) : GenericServlet() {
 
     override fun service(req: ServletRequest, res: ServletResponse) {
@@ -37,6 +36,6 @@ class RoutingServlet(
     }
 
     private fun invoke(route: Route, req: HttpServletRequest, res: HttpResponse) {
-        route.action.handle(HttpRequest(req, PathParams(route.path)), res)
+        route.action.handle(HttpRequest(req, PathParams(route.path)), res, context)
     }
 }

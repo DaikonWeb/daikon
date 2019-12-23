@@ -64,7 +64,7 @@ class HttpRoutingTest {
     fun `route action`() {
         HttpServer()
             .get("/foo", object : RouteAction {
-                override fun handle(request: Request, response: Response) {
+                override fun handle(request: Request, response: Response, context: Context) {
                     response.write("Hello foo")
                 }
             })

@@ -5,7 +5,7 @@ import org.eclipse.jetty.http.HttpStatus.NOT_FOUND_404
 import org.eclipse.jetty.http.HttpStatus.OK_200
 
 class DefaultRouteAction : RouteAction {
-    override fun handle(request: Request, response: Response) {
+    override fun handle(request: Request, response: Response, context: Context) {
         if (request.method() == GET && request.path() == "/") {
             response.status(OK_200)
             response.type("text/html")
