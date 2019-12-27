@@ -18,7 +18,7 @@ class HttpServer(private val port: Int = 4545, initializeActions: HttpServer.() 
     private val afterStartActions = mutableListOf<(Context) -> Unit>()
     private val beforeStopActions = mutableListOf<(Context) -> Unit>()
     private val basePath = mutableListOf("")
-    private val context = ServerContext()
+    private val context= ServerContext(port)
 
     init {
         initializeActions()
