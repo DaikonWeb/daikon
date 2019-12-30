@@ -10,6 +10,7 @@ import org.eclipse.jetty.util.resource.Resource
 import java.time.LocalDateTime.now
 import java.time.temporal.ChronoUnit.MILLIS
 
+
 class HttpServer(private val port: Int = 4545, initializeActions: HttpServer.() -> Unit = {}) : AutoCloseable {
 
     private val routes = Routing()
@@ -19,6 +20,7 @@ class HttpServer(private val port: Int = 4545, initializeActions: HttpServer.() 
     private val beforeStopActions = mutableListOf<(Context) -> Unit>()
     private val basePath = mutableListOf("")
     private val context= ServerContext(port)
+    private val basicAuth = BasicAuthentication()
 
     init {
         initializeActions()
@@ -146,6 +148,16 @@ class HttpServer(private val port: Int = 4545, initializeActions: HttpServer.() 
 
     fun beforeStop(function: (Context) -> Unit): HttpServer {
         beforeStopActions.add(function)
+        return this
+    }
+
+    fun basicAuthUser(username: String, password: String): HttpServer {
+        basicAuth.addUser(username, password)
+        return this
+    }
+
+    fun basicAuth(path: String, realm: String = "default"): HttpServer {
+        before(path) { req, res -> basicAuth.validate(req, res, realm) }
         return this
     }
 
