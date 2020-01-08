@@ -5,6 +5,7 @@ interface Request {
     fun header(name: String): String
     fun body(): String
     fun url(): String
+    fun uri(): String
     fun path(): String
     fun <T> attribute(key: String, value: T)
     fun <T> attribute(key: String) : T

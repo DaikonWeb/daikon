@@ -2,7 +2,15 @@ package daikon
 
 import javax.servlet.http.HttpServletRequest
 
-class HttpRequest(private val request: HttpServletRequest, private val pathParams: PathParams) : Request {
+class HttpRequest(private val request: HttpServletRequest) : Request {
+    private val body by lazy { request.reader.readText() }
+    private lateinit var pathParams: PathParams
+
+    fun withPathParams(value: String): HttpRequest {
+        pathParams = PathParams(value)
+        return this
+    }
+
     override fun <T> attribute(key: String): T {
         @Suppress("UNCHECKED_CAST")
         return request.getAttribute(key)!! as T
@@ -24,8 +32,12 @@ class HttpRequest(private val request: HttpServletRequest, private val pathParam
         return request.requestURL.toString()
     }
 
+    override fun uri(): String {
+        return request.requestURI
+    }
+
     override fun body(): String {
-        return request.reader.readText()
+        return body
     }
 
     override fun header(name: String): String {

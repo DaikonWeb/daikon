@@ -1,6 +1,7 @@
 package daikon
 
 class PathParams(private val path: String) {
+
     fun path(): String {
         return path.split("/").joinToString(separator = "/") { if (it.startsWith(":")) "[^/]+" else it }
     }

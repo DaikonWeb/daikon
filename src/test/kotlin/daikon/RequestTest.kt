@@ -57,6 +57,16 @@ class RequestTest {
     }
 
     @Test
+    fun `access twice to the body`() {
+        HttpServer()
+            .before("/") { req, res -> println("Body: ${req.body()}") }
+            .any("/") { req, res -> res.write("Hello ${req.body()}") }
+            .start().use {
+                assertThat(post("/", data = "Bob").text).isEqualTo("Hello Bob")
+            }
+    }
+
+    @Test
     fun `empty body`() {
         HttpServer()
             .any("/") { req, res -> res.write("Foo${req.body()}Bar") }

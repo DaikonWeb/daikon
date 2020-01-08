@@ -14,28 +14,28 @@ class RoutingServlet(
     private val context: Context
 ) : GenericServlet() {
 
-    override fun service(req: ServletRequest, res: ServletResponse) {
-        req as HttpServletRequest
-        val httpRes = HttpResponse(res as HttpServletResponse)
+    override fun service(servletRequest: ServletRequest, servletResponse: ServletResponse) {
+        val request = HttpRequest(servletRequest as HttpServletRequest)
+        val response = HttpResponse(servletResponse as HttpServletResponse)
 
         try {
             befores
-                .allFor(Method.valueOf(req.method), req.requestURI)
-                .forEach { invoke(it, req, httpRes) }
+                .allFor(request.method(), request.uri())
+                .forEach { invoke(it, request, response) }
 
             routes
                 .default(Route(ANY, "ignore", DefaultRouteAction()))
-                .bestFor(Method.valueOf(req.method), req.requestURI)
-                .also { invoke(it, req, httpRes) }
+                .bestFor(request.method(), request.uri())
+                .also { invoke(it, request, response) }
 
             afters
-                .allFor(Method.valueOf(req.method), req.requestURI)
-                .forEach { invoke(it, req, httpRes) }
+                .allFor(request.method(), request.uri())
+                .forEach { invoke(it, request, response) }
         }catch (e: HaltException) {
         }
     }
 
-    private fun invoke(route: Route, req: HttpServletRequest, res: HttpResponse) {
-        route.action.handle(HttpRequest(req, PathParams(route.path)), res, context)
+    private fun invoke(route: Route, req: HttpRequest, res: HttpResponse) {
+        route.action.handle(req.withPathParams(route.path), res, context)
     }
 }
