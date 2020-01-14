@@ -44,6 +44,10 @@ class HttpRequest(private val request: HttpServletRequest) : Request {
         return request.getHeader(name)
     }
 
+    override fun hasHeader(name: String): Boolean {
+        return request.headerNames.toList().contains(name)
+    }
+
     override fun param(name: String): String {
          return request.getParameter(name) ?: pathParams.valueOf(path()).getValue(name)
     }

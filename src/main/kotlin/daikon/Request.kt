@@ -3,6 +3,7 @@ package daikon
 interface Request {
     fun param(name: String): String
     fun header(name: String): String
+    fun hasHeader(name: String): Boolean
     fun body(): String
     fun url(): String
     fun uri(): String

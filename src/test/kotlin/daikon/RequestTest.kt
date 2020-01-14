@@ -48,6 +48,20 @@ class RequestTest {
     }
 
     @Test
+    fun `check if an header is present`() {
+        HttpServer()
+            .post("/*") { req, res ->
+                val name = if (req.hasHeader("name")) req.header("name") else "World"
+                res.write("Hello $name")
+            }
+            .start()
+            .use {
+                assertThat(post("/").text).isEqualTo("Hello World")
+                assertThat(post("/", mapOf("name" to "Bob")).text).isEqualTo("Hello Bob")
+            }
+    }
+
+    @Test
     fun body() {
         HttpServer()
             .any("/") { req, res -> res.write("Hello ${req.body()}") }
@@ -59,7 +73,7 @@ class RequestTest {
     @Test
     fun `access twice to the body`() {
         HttpServer()
-            .before("/") { req, res -> println("Body: ${req.body()}") }
+            .before("/") { req, _ -> println("Body: ${req.body()}") }
             .any("/") { req, res -> res.write("Hello ${req.body()}") }
             .start().use {
                 assertThat(post("/", data = "Bob").text).isEqualTo("Hello Bob")
