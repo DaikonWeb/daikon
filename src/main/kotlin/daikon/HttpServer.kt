@@ -77,6 +77,51 @@ class HttpServer(private val port: Int = 4545, initializeActions: HttpServer.() 
         return this
     }
 
+    fun put(path: String, action: (Request, Response) -> Unit): HttpServer {
+        put(path, DummyRouteAction(action))
+        return this
+    }
+
+    fun put(path: String, action: (Request, Response, Context) -> Unit): HttpServer {
+        put(path, ContextRouteAction(action))
+        return this
+    }
+
+    fun put(path: String, action: RouteAction): HttpServer {
+        add(PUT, path, action)
+        return this
+    }
+
+    fun delete(path: String, action: (Request, Response) -> Unit): HttpServer {
+        delete(path, DummyRouteAction(action))
+        return this
+    }
+
+    fun delete(path: String, action: (Request, Response, Context) -> Unit): HttpServer {
+        delete(path, ContextRouteAction(action))
+        return this
+    }
+
+    fun delete(path: String, action: RouteAction): HttpServer {
+        add(DELETE, path, action)
+        return this
+    }
+
+    fun options(path: String, action: (Request, Response) -> Unit): HttpServer {
+        options(path, DummyRouteAction(action))
+        return this
+    }
+
+    fun options(path: String, action: (Request, Response, Context) -> Unit): HttpServer {
+        options(path, ContextRouteAction(action))
+        return this
+    }
+
+    fun options(path: String, action: RouteAction): HttpServer {
+        add(OPTIONS, path, action)
+        return this
+    }
+
     fun head(path: String, action: (Request, Response) -> Unit): HttpServer {
         head(path, DummyRouteAction(action))
         return this

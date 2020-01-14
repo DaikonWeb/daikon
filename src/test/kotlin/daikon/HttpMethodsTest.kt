@@ -1,8 +1,11 @@
 package daikon
 
+import daikon.Localhost.delete
 import daikon.Localhost.get
 import daikon.Localhost.head
+import daikon.Localhost.options
 import daikon.Localhost.post
+import daikon.Localhost.put
 import org.assertj.core.api.Assertions.assertThat
 import org.eclipse.jetty.http.HttpStatus
 import org.eclipse.jetty.http.HttpStatus.*
@@ -55,5 +58,32 @@ class HttpMethodsTest {
             .start().use {
                 assertThat(head("/").statusCode).isEqualTo(ACCEPTED_202)
             }
+    }
+
+    @Test
+    fun `do put`() {
+        HttpServer()
+            .put("/") { _, res -> res.status(NO_CONTENT_204) }
+            .start().use {
+                assertThat(put("/").statusCode).isEqualTo(NO_CONTENT_204)
+            }
+    }
+
+    @Test
+    fun `do delete`() {
+        HttpServer()
+                .delete("/") { _, res -> res.status(NO_CONTENT_204) }
+                .start().use {
+                    assertThat(delete("/").statusCode).isEqualTo(NO_CONTENT_204)
+                }
+    }
+
+    @Test
+    fun `do options`() {
+        HttpServer()
+                .options("/") { _, res -> res.status(OK_200) }
+                .start().use {
+                    assertThat(options("/").statusCode).isEqualTo(OK_200)
+                }
     }
 }
