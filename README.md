@@ -62,6 +62,7 @@ HttpServer()
 ## Authors
 
 * **[Marco Fracassi](https://github.com/fracassi-marco)**
+* **[Alessio Coser](https://github.com/AlessioCoser)**
 
 ## License
 
