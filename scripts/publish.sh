@@ -6,4 +6,5 @@ sed -ie "s|<version>.*</version>|<version>${TAG}</version>|g" README.md
 
 git commit -am "Release ${TAG}"
 git tag $TAG
+git push
 git push --tags
