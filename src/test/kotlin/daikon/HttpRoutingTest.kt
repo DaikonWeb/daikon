@@ -43,11 +43,21 @@ class HttpRoutingTest {
     @Test
     fun `mix of static file and dynamic routes`() {
         HttpServer()
-            .get("/bar/2") { _, res -> res.write("Hello") }
-            .assets("/foo/*")
-            .start().use {
-                assertThat(get("/foo/style.css").text).isEqualTo("body {}")
-                assertThat(get("/bar/2").text).isEqualTo("Hello")
+                .get("/bar/2") { _, res -> res.write("Hello") }
+                .assets("/foo/*")
+                .start().use {
+                    assertThat(get("/foo/style.css").text).isEqualTo("body {}")
+                    assertThat(get("/bar/2").text).isEqualTo("Hello")
+                }
+    }
+
+    @Test
+    fun `serve assets inside a path`() {
+        HttpServer()
+            .path("/foo") {
+                assets("/bar/*")
+            }.start().use {
+                assertThat(get("/foo/bar/style.css").text).isEqualTo("body {}")
             }
     }
 

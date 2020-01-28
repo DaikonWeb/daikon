@@ -174,7 +174,7 @@ class HttpServer(private val port: Int = 4545, initializeActions: HttpServer.() 
 
     fun assets(path: String): HttpServer {
         val servletHolder = ServletHolder(DefaultServlet())
-        handler.addServlet(servletHolder, path)
+        handler.addServlet(servletHolder, joinPaths(path))
         handler.baseResource = Resource.newResource(HttpServer::class.java.getResource("/assets/"))
         return this
     }
