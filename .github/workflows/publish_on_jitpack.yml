@@ -1,4 +1,4 @@
-name: Publish
+name: Publish on JitPack
 on:
   push:
     tags:
@@ -21,4 +21,6 @@ jobs:
         draft: false
         prerelease: false
     - name: Publish on JitPack
-      run: curl "https://jitpack.io/api/builds/com.github.DaikonWeb/daikon/${{ github.ref }}"
+      run: |
+        echo "Deploy -> ${{ steps.branch_name.outputs.SOURCE_TAG }}"
+        curl "https://jitpack.io/api/builds/com.github.DaikonWeb/daikon/${{ steps.branch_name.outputs.SOURCE_TAG }}"
