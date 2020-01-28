@@ -21,6 +21,6 @@ jobs:
         draft: false
         prerelease: false
     - name: Publish on JitPack
-      run: |
-        echo "Deploy -> ${{ steps.branch_name.outputs.SOURCE_TAG }}"
-        curl "https://jitpack.io/api/builds/com.github.DaikonWeb/daikon/${{ steps.branch_name.outputs.SOURCE_TAG }}"
+      env:
+        GITHUB_REF: ${{ github.ref }}
+      run: curl "https://jitpack.io/api/builds/com.github.DaikonWeb/daikon/${GITHUB_REF##*/}"
