@@ -16,9 +16,10 @@ do
     (
         cd ${folder}
         echo "deploy: $(pwd)"
-#        git stash
-#        git pull --rebase
-#        ./${SCRIPT_NAME} ${TAG}
-#        git stash pop
+        git stash
+        git pull --rebase
+        git pull --tags
+        ./${SCRIPT_NAME} ${TAG}
+        git stash pop
     )
 done
