@@ -20,6 +20,6 @@ do
         git pull --rebase
         git pull --tags
         ./${SCRIPT_NAME} ${TAG}
-        git stash pop
+        git stash pop || true
     )
 done
