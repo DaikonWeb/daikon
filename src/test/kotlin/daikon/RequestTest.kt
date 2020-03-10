@@ -28,6 +28,16 @@ class RequestTest {
     }
 
     @Test
+    fun `post parameters`() {
+        HttpServer()
+            .post("/*") { req, res -> res.write(req.body()) }
+            .start()
+            .use {
+                assertThat(post("/", data = mapOf("name" to "Bob")).text).isEqualTo("name=Bob")
+            }
+    }
+
+    @Test
     fun headers() {
         HttpServer()
             .post("/*") { req, res -> res.write("hello ${req.header("name")}") }
