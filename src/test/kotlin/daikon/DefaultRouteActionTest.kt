@@ -4,8 +4,8 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import daikon.Method.GET
-import org.eclipse.jetty.http.HttpStatus.NOT_FOUND_404
-import org.eclipse.jetty.http.HttpStatus.OK_200
+import daikon.HttpStatus.NOT_FOUND_404
+import daikon.HttpStatus.OK_200
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.contains
 

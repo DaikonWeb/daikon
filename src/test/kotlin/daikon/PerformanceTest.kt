@@ -1,10 +1,10 @@
 package daikon
 
+import daikon.HttpStatus.OK_200
 import daikon.Localhost.get
 import kotlinx.coroutines.*
 import org.assertj.core.api.AbstractIntegerAssert
 import org.assertj.core.api.Assertions.assertThat
-import org.eclipse.jetty.http.HttpStatus.OK_200
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit.MILLIS

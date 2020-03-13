@@ -1,6 +1,6 @@
 package daikon
 
-import org.eclipse.jetty.http.HttpStatus.MOVED_TEMPORARILY_302
+import daikon.HttpStatus.MOVED_TEMPORARILY_302
 
 interface Response {
     fun write(text: String)

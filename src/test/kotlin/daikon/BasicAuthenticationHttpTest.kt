@@ -3,8 +3,8 @@ package daikon
 import daikon.Localhost.get
 import khttp.structures.authorization.BasicAuthorization
 import org.assertj.core.api.Assertions.assertThat
-import org.eclipse.jetty.http.HttpStatus.OK_200
-import org.eclipse.jetty.http.HttpStatus.UNAUTHORIZED_401
+import daikon.HttpStatus.OK_200
+import daikon.HttpStatus.UNAUTHORIZED_401
 import org.junit.jupiter.api.Test
 
 class BasicAuthenticationHttpTest {

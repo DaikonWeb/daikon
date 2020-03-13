@@ -1,8 +1,8 @@
 package daikon
 
 import daikon.Method.GET
-import org.eclipse.jetty.http.HttpStatus.NOT_FOUND_404
-import org.eclipse.jetty.http.HttpStatus.OK_200
+import daikon.HttpStatus.NOT_FOUND_404
+import daikon.HttpStatus.OK_200
 
 class DefaultRouteAction : RouteAction {
     override fun handle(request: Request, response: Response, context: Context) {

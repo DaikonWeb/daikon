@@ -1,5 +1,9 @@
 package daikon
 
+import daikon.HttpStatus.ACCEPTED_202
+import daikon.HttpStatus.NOT_FOUND_404
+import daikon.HttpStatus.NO_CONTENT_204
+import daikon.HttpStatus.OK_200
 import daikon.Localhost.delete
 import daikon.Localhost.get
 import daikon.Localhost.head
@@ -7,8 +11,6 @@ import daikon.Localhost.options
 import daikon.Localhost.post
 import daikon.Localhost.put
 import org.assertj.core.api.Assertions.assertThat
-import org.eclipse.jetty.http.HttpStatus
-import org.eclipse.jetty.http.HttpStatus.*
 import org.junit.jupiter.api.Test
 
 class HttpMethodsTest {

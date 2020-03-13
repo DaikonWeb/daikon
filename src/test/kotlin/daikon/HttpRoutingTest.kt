@@ -1,10 +1,13 @@
 package daikon
 
 
+import daikon.HttpStatus.INTERNAL_SERVER_ERROR_500
+import daikon.HttpStatus.NOT_FOUND_404
+import daikon.HttpStatus.OK_200
+import daikon.HttpStatus.UNAUTHORIZED_401
 import daikon.Localhost.get
 import daikon.RequestFlow.halt
 import org.assertj.core.api.Assertions.assertThat
-import org.eclipse.jetty.http.HttpStatus.*
 import org.junit.jupiter.api.Test
 
 class HttpRoutingTest {
