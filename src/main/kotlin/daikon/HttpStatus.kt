@@ -15,7 +15,6 @@ object HttpStatus {
     const val MULTIPLE_CHOICES_300 = 300
     const val MOVED_PERMANENTLY_301 = 301
     const val MOVED_TEMPORARILY_302 = 302
-    const val FOUND_302 = 302
     const val SEE_OTHER_303 = 303
     const val NOT_MODIFIED_304 = 304
     const val USE_PROXY_305 = 305
