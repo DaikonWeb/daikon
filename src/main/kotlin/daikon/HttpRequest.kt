@@ -6,7 +6,7 @@ class HttpRequest(private val request: HttpServletRequest) : Request {
     private val body by lazy { request.reader.readText() }
     private lateinit var pathParams: PathParams
 
-    fun withPathParams(value: String): HttpRequest {
+    override fun withPathParams(value: String): HttpRequest {
         pathParams = PathParams(value)
         return this
     }
