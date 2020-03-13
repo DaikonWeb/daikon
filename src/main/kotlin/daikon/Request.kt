@@ -11,5 +11,5 @@ interface Request {
     fun <T> attribute(key: String, value: T)
     fun <T> attribute(key: String) : T
     fun method(): Method
-    fun withPathParams(value: String): HttpRequest
+    fun withPathParams(value: String): Request
 }
