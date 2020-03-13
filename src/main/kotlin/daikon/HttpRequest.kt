@@ -32,10 +32,6 @@ class HttpRequest(private val request: HttpServletRequest) : Request {
         return request.requestURL.toString()
     }
 
-    override fun uri(): String {
-        return request.requestURI
-    }
-
     override fun body(): String {
         return body
     }

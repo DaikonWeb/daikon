@@ -11,16 +11,16 @@ class RoutingHandler(
     fun execute(request: Request, response: Response) {
         try {
             befores
-                .allFor(request.method(), request.uri())
+                .allFor(request.method(), request.path())
                 .forEach { invoke(it, request, response) }
 
             routes
                 .default(Route(ANY, "ignore", DefaultRouteAction()))
-                .bestFor(request.method(), request.uri())
+                .bestFor(request.method(), request.path())
                 .also { invoke(it, request, response) }
 
             afters
-                .allFor(request.method(), request.uri())
+                .allFor(request.method(), request.path())
                 .forEach { invoke(it, request, response) }
         } catch (e: HaltException) {
         }
