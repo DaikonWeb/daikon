@@ -1,5 +1,7 @@
 package daikon
 
+import daikon.Method.ANY
+
 class RoutingHandler(
     private val befores: Routing,
     private val routes: Routing,
@@ -13,13 +15,7 @@ class RoutingHandler(
                 .forEach { invoke(it, request, response) }
 
             routes
-                .default(
-                    Route(
-                        Method.ANY,
-                        "ignore",
-                        DefaultRouteAction()
-                    )
-                )
+                .default(Route(ANY, "ignore", DefaultRouteAction()))
                 .bestFor(request.method(), request.uri())
                 .also { invoke(it, request, response) }
 
