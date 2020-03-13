@@ -1,6 +1,6 @@
 package daikon
 
-import daikon.HttpStatus.OK_200
+import daikon.core.HttpStatus.OK_200
 import daikon.Localhost.get
 import kotlinx.coroutines.*
 import org.assertj.core.api.AbstractIntegerAssert

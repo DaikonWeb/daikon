@@ -1,6 +1,8 @@
 package daikon
 
-import daikon.RequestFlow.halt
+import daikon.core.Request
+import daikon.core.RequestFlow.halt
+import daikon.core.Response
 import org.eclipse.jetty.http.HttpHeader.AUTHORIZATION
 import org.eclipse.jetty.http.HttpHeader.WWW_AUTHENTICATE
 import java.nio.charset.StandardCharsets.UTF_8

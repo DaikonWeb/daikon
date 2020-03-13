@@ -1,6 +1,7 @@
 package daikon
 
-import daikon.Method.*
+import daikon.core.Method.*
+import daikon.core.*
 import org.eclipse.jetty.server.Server
 import org.eclipse.jetty.servlet.DefaultServlet
 import org.eclipse.jetty.servlet.ServletContextHandler
@@ -163,7 +164,7 @@ class HttpServer(private val port: Int = 4545, initializeActions: HttpServer.() 
     }
 
     fun after(path: String = "/*", action: (Request, Response) -> Unit): HttpServer {
-        afterActions.add(Route(ANY, joinPaths(path), DummyRouteAction(action)))
+        afterActions.add(Route(Method.ANY, joinPaths(path), DummyRouteAction(action)))
         return this
     }
 

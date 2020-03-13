@@ -12,6 +12,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     compile("org.eclipse.jetty:jetty-server:9.4.26.v20200117")
     compile("org.eclipse.jetty:jetty-servlet:9.4.26.v20200117")
+    compile("com.github.DaikonWeb:daikon-core:0.0.1")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.2")
     testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.5.1")

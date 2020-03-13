@@ -1,5 +1,7 @@
 package daikon
 
+import daikon.core.Context
+
 class ServerContext(private val port: Int) : Context {
 
     private val attributes = mutableMapOf<String, Any>()

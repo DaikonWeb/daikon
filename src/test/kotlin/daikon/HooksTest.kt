@@ -2,7 +2,7 @@ package daikon
 
 import daikon.Localhost.get
 import org.assertj.core.api.Assertions.assertThat
-import daikon.HttpStatus.ACCEPTED_202
+import daikon.core.HttpStatus.ACCEPTED_202
 import org.junit.jupiter.api.Test
 
 class HooksTest {

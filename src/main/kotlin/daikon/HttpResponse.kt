@@ -1,5 +1,6 @@
 package daikon
 
+import daikon.core.Response
 import java.io.StringWriter
 import java.nio.charset.StandardCharsets.UTF_8
 import javax.servlet.http.HttpServletResponse

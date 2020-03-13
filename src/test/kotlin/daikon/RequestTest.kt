@@ -1,6 +1,6 @@
 package daikon
 
-import daikon.HttpStatus.INTERNAL_SERVER_ERROR_500
+import daikon.core.HttpStatus.INTERNAL_SERVER_ERROR_500
 import daikon.Localhost.get
 import daikon.Localhost.post
 import org.assertj.core.api.Assertions.assertThat

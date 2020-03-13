@@ -1,5 +1,8 @@
 package daikon
 
+import daikon.core.Method
+import daikon.core.PathParams
+import daikon.core.Request
 import javax.servlet.http.HttpServletRequest
 
 class HttpRequest(private val request: HttpServletRequest) : Request {

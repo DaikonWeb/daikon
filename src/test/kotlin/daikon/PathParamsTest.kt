@@ -1,5 +1,6 @@
 package daikon
 
+import daikon.core.PathParams
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 

@@ -1,7 +1,10 @@
 package daikon
 
 import com.nhaarman.mockitokotlin2.mock
-import daikon.Method.*
+import daikon.core.Method.*
+import daikon.core.Route
+import daikon.core.RouteAction
+import daikon.core.Routing
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 

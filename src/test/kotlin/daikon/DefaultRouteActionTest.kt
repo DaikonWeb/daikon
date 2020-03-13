@@ -3,9 +3,13 @@ package daikon
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
-import daikon.Method.GET
-import daikon.HttpStatus.NOT_FOUND_404
-import daikon.HttpStatus.OK_200
+import daikon.core.Context
+import daikon.core.DefaultRouteAction
+import daikon.core.Method.GET
+import daikon.core.HttpStatus.NOT_FOUND_404
+import daikon.core.HttpStatus.OK_200
+import daikon.core.Request
+import daikon.core.Response
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.contains
 

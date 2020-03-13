@@ -3,7 +3,7 @@ package daikon
 import daikon.Localhost.get
 import org.junit.jupiter.api.Test
 import org.assertj.core.api.Assertions.assertThat
-import daikon.HttpStatus.OK_200
+import daikon.core.HttpStatus.OK_200
 
 class HttpServerTest {
 
