@@ -1,6 +1,6 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.3.61'
-    id("maven")
+    id 'org.jetbrains.kotlin.jvm' version '1.3.70'
+    id 'java-library'
 }
 
 repositories {
@@ -9,29 +9,21 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    compile("org.eclipse.jetty:jetty-server:9.4.26.v20200117")
-    compile("org.eclipse.jetty:jetty-servlet:9.4.26.v20200117")
-    compile("com.github.DaikonWeb:daikon-core:0.0.2")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.2")
-    testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.5.1")
-    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.5.1")
-    testImplementation("net.wuerl.kotlin:assertj-core-kotlin:0.2.1")
-    testImplementation("com.github.jkcclemens:khttp:0.1.0")
-}
+    implementation platform('org.jetbrains.kotlin:kotlin-bom')
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
 
-compileKotlin {
-    kotlinOptions.jvmTarget = "1.8"
-}
-compileTestKotlin {
-    kotlinOptions.jvmTarget = "1.8"
+    compile "org.eclipse.jetty:jetty-server:9.4.26.v20200117"
+    compile "org.eclipse.jetty:jetty-servlet:9.4.26.v20200117"
+    compile "com.github.DaikonWeb:daikon-core:0.0.2"
+
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.2"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:5.5.2"
+    testImplementation "org.junit.jupiter:junit-jupiter-engine:5.5.2"
+    testImplementation "net.wuerl.kotlin:assertj-core-kotlin:0.2.1"
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0"
+    testImplementation "com.github.jkcclemens:khttp:0.1.0"
 }
 
 test {
     useJUnitPlatform()
-}
-
-jar {
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }
