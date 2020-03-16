@@ -1,5 +1,15 @@
 #!/usr/bin/env sh
 TAG=$1
+
+if [[ "$TAG" -eq "" ]]
+then
+    echo "Enter a valid version to publish!"
+    echo ""
+    echo "Usage:"
+    echo "$0 [DAIKON_VERSION]"
+    exit 1
+fi
+
 DAIKON_ROOT="$(dirname $0)/.."
 SCRIPT_NAME="publish.sh"
 
