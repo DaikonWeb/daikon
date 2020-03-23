@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 TAG=$1
 
-if [[ "$TAG" -eq "" ]]
+if [[ "$TAG" == "" ]]
 then
     echo "Enter a valid version to publish!"
     echo ""
