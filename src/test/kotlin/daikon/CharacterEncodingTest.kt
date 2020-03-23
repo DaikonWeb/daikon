@@ -1,10 +1,9 @@
 package daikon
 
-import daikon.Localhost.get
-import daikon.Localhost.post
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import java.net.URLEncoder
+import topinambur.http
+import java.net.URLEncoder.encode
 import java.nio.charset.StandardCharsets.UTF_8
 
 class CharacterEncodingTest {
@@ -14,7 +13,7 @@ class CharacterEncodingTest {
         HttpServer()
             .get("/") { _, res -> res.write("%&è") }
             .start().use {
-                assertThat(get("/").text).isEqualTo("%&è")
+                assertThat(local("/").http.get().body).isEqualTo("%&è")
             }
     }
 
@@ -23,7 +22,7 @@ class CharacterEncodingTest {
         HttpServer()
             .get("/") { req, res -> res.write(req.param("name")) }
             .start().use {
-                assertThat(get("/?name=è$%26").text).isEqualTo("è$&")
+                assertThat(local("/?name=è$%26").http.get().body).isEqualTo("è$&")
             }
     }
 
@@ -32,7 +31,7 @@ class CharacterEncodingTest {
         HttpServer()
             .get("/:name") { req, res -> res.write(req.param(":name")) }
             .start().use {
-                assertThat(get("/è%24%26").text).isEqualTo(URLEncoder.encode("è$&", UTF_8.name()))
+                assertThat(local("/è%24%26").http.get().body).isEqualTo(encode("è$&", UTF_8.name()))
             }
     }
 
@@ -41,8 +40,8 @@ class CharacterEncodingTest {
         HttpServer()
             .post("/") { req, res -> res.write(req.param("name")) }
             .start().use {
-                val response = post("/", data = mapOf("name" to "è$&"))
-                assertThat(response.text).isEqualTo("è$&")
+                val response = local("/").http.post(data = mapOf("name" to "è$&"))
+                assertThat(response.body).isEqualTo("è$&")
             }
     }
 
@@ -51,8 +50,8 @@ class CharacterEncodingTest {
         HttpServer()
             .get("/") { req, res -> res.write(req.header("name")) }
             .start().use {
-                val response = get("/", headers = mapOf("name" to "è$&"))
-                assertThat(response.text).isEqualTo("Ã¨$&")
+                val response = local("/").http.get(headers = mapOf("name" to "è$&"))
+                assertThat(response.body).isEqualTo("Ã¨$&")
             }
     }
 }

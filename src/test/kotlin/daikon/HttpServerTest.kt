@@ -1,9 +1,9 @@
 package daikon
 
-import daikon.Localhost.get
-import org.junit.jupiter.api.Test
-import org.assertj.core.api.Assertions.assertThat
 import daikon.core.HttpStatus.OK_200
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
+import topinambur.http
 
 class HttpServerTest {
 
@@ -12,7 +12,7 @@ class HttpServerTest {
         HttpServer()
             .get("/", NopAction())
             .start().use {
-                val response = get("/")
+                val response = local("/").http.get()
                 assertThat(response.statusCode).isEqualTo(OK_200)
             }
     }
@@ -22,7 +22,7 @@ class HttpServerTest {
         HttpServer {
             get("/", NopAction())
         }.start().use {
-            val response = get("/")
+            val response = local("/").http.get()
             assertThat(response.statusCode).isEqualTo(OK_200)
         }
     }

@@ -4,14 +4,9 @@ import daikon.core.HttpStatus.ACCEPTED_202
 import daikon.core.HttpStatus.NOT_FOUND_404
 import daikon.core.HttpStatus.NO_CONTENT_204
 import daikon.core.HttpStatus.OK_200
-import daikon.Localhost.delete
-import daikon.Localhost.get
-import daikon.Localhost.head
-import daikon.Localhost.options
-import daikon.Localhost.post
-import daikon.Localhost.put
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import topinambur.http
 
 class HttpMethodsTest {
 
@@ -20,7 +15,7 @@ class HttpMethodsTest {
         HttpServer()
             .get("/") { _, res -> res.write("Hello") }
             .start().use {
-                assertThat(get("/").text).isEqualTo("Hello")
+                assertThat(local("/").http.get().body).isEqualTo("Hello")
             }
     }
 
@@ -29,7 +24,7 @@ class HttpMethodsTest {
         HttpServer()
             .post("/") { _, res -> res.write("Hello") }
             .start().use {
-                assertThat(post("/").text).isEqualTo("Hello")
+                assertThat(local("/").http.post().body).isEqualTo("Hello")
             }
     }
 
@@ -38,8 +33,8 @@ class HttpMethodsTest {
         HttpServer()
             .any("/") { _, res -> res.write("Hello") }
             .start().use {
-                assertThat(get("/").text).isEqualTo("Hello")
-                assertThat(post("/").text).isEqualTo("Hello")
+                assertThat(local("/").http.get().body).isEqualTo("Hello")
+                assertThat(local("/").http.post().body).isEqualTo("Hello")
             }
     }
 
@@ -48,8 +43,8 @@ class HttpMethodsTest {
         HttpServer()
             .get("/", NopAction())
             .start().use {
-                assertThat(post("/").statusCode).isEqualTo(NOT_FOUND_404)
-                assertThat(get("/foo").statusCode).isEqualTo(NOT_FOUND_404)
+                assertThat(local("/").http.post().statusCode).isEqualTo(NOT_FOUND_404)
+                assertThat(local("/foo").http.get().statusCode).isEqualTo(NOT_FOUND_404)
             }
     }
 
@@ -58,7 +53,7 @@ class HttpMethodsTest {
         HttpServer()
             .head("/") { _, res -> res.status(ACCEPTED_202) }
             .start().use {
-                assertThat(head("/").statusCode).isEqualTo(ACCEPTED_202)
+                assertThat(local("/").http.head().statusCode).isEqualTo(ACCEPTED_202)
             }
     }
 
@@ -67,7 +62,7 @@ class HttpMethodsTest {
         HttpServer()
             .put("/") { _, res -> res.status(NO_CONTENT_204) }
             .start().use {
-                assertThat(put("/").statusCode).isEqualTo(NO_CONTENT_204)
+                assertThat(local("/").http.call("PUT").statusCode).isEqualTo(NO_CONTENT_204)
             }
     }
 
@@ -76,7 +71,7 @@ class HttpMethodsTest {
         HttpServer()
                 .delete("/") { _, res -> res.status(NO_CONTENT_204) }
                 .start().use {
-                    assertThat(delete("/").statusCode).isEqualTo(NO_CONTENT_204)
+                    assertThat(local("/").http.delete().statusCode).isEqualTo(NO_CONTENT_204)
                 }
     }
 
@@ -85,7 +80,7 @@ class HttpMethodsTest {
         HttpServer()
                 .options("/") { _, res -> res.status(OK_200) }
                 .start().use {
-                    assertThat(options("/").statusCode).isEqualTo(OK_200)
+                    assertThat(local("/").http.call("OPTIONS").statusCode).isEqualTo(OK_200)
                 }
     }
 }

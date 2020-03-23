@@ -1,11 +1,14 @@
 package daikon
 
 import daikon.core.HttpStatus.OK_200
-import daikon.Localhost.get
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.AbstractIntegerAssert
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import topinambur.http
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit.MILLIS
 import kotlin.random.Random
@@ -19,7 +22,7 @@ class PerformanceTest {
         for (i in 1..1000) {
             startServer().use {
                 measures.add(elapsedMillis {
-                    assertThat(get("/?a=${Random.nextInt()}").statusCode).isEqualTo(OK_200)
+                    assertThat(local("/?a=${Random.nextInt()}").http.get().statusCode).isEqualTo(OK_200)
                 })
             }
         }
@@ -36,7 +39,7 @@ class PerformanceTest {
         startServer().use {
             for (i in 1..1000) {
                 measures.add(elapsedMillis {
-                    assertThat(get("/?a=${Random.nextInt()}").statusCode).isEqualTo(OK_200)
+                    assertThat(local("/?a=${Random.nextInt()}").http.get().statusCode).isEqualTo(OK_200)
                 })
             }
         }
@@ -56,7 +59,7 @@ class PerformanceTest {
                     val results = mutableListOf<Long>()
                     for (j in 1..100) {
                         results.add(elapsedMillis {
-                            assertThat(get("/?a=${Random.nextInt()}").statusCode).isEqualTo(OK_200)
+                            assertThat(local("/?a=${Random.nextInt()}").http.get().statusCode).isEqualTo(OK_200)
                         })
                     }
 

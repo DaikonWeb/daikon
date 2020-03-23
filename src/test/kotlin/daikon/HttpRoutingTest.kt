@@ -1,18 +1,18 @@
 package daikon
 
 
+import daikon.core.Context
 import daikon.core.HttpStatus.INTERNAL_SERVER_ERROR_500
 import daikon.core.HttpStatus.NOT_FOUND_404
 import daikon.core.HttpStatus.OK_200
 import daikon.core.HttpStatus.UNAUTHORIZED_401
-import daikon.Localhost.get
-import daikon.core.Context
 import daikon.core.Request
 import daikon.core.RequestFlow.halt
 import daikon.core.Response
 import daikon.core.RouteAction
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import topinambur.http
 
 class HttpRoutingTest {
 
@@ -22,8 +22,8 @@ class HttpRoutingTest {
             .get("/foo") { _, res -> res.write("Hello foo") }
             .get("/bar") { _, res -> res.write("Bye bar") }
             .start().use {
-                assertThat(get("/foo").text).isEqualTo("Hello foo")
-                assertThat(get("/bar").text).isEqualTo("Bye bar")
+                assertThat(local("/foo").http.get().body).isEqualTo("Hello foo")
+                assertThat(local("/bar").http.get().body).isEqualTo("Bye bar")
             }
     }
 
@@ -33,8 +33,8 @@ class HttpRoutingTest {
             .get("/*") { _, res -> res.write("Hello foo") }
             .get("/bar/*") { _, res -> res.write("Bye bar") }
             .start().use {
-                assertThat(get("/ba").text).isEqualTo("Hello foo")
-                assertThat(get("/bar/").text).isEqualTo("Bye bar")
+                assertThat(local("/ba").http.get().body).isEqualTo("Hello foo")
+                assertThat(local("/bar/").http.get().body).isEqualTo("Bye bar")
             }
     }
 
@@ -43,7 +43,7 @@ class HttpRoutingTest {
         HttpServer()
             .assets("/foo/*")
             .start().use {
-                assertThat(get("/foo/style.css").text).isEqualTo("body {}")
+                assertThat(local("/foo/style.css").http.get().body).isEqualTo("body {}")
             }
     }
 
@@ -53,8 +53,8 @@ class HttpRoutingTest {
                 .get("/bar/2") { _, res -> res.write("Hello") }
                 .assets("/foo/*")
                 .start().use {
-                    assertThat(get("/foo/style.css").text).isEqualTo("body {}")
-                    assertThat(get("/bar/2").text).isEqualTo("Hello")
+                    assertThat(local("/foo/style.css").http.get().body).isEqualTo("body {}")
+                    assertThat(local("/bar/2").http.get().body).isEqualTo("Hello")
                 }
     }
 
@@ -64,7 +64,7 @@ class HttpRoutingTest {
             .path("/foo") {
                 assets("/bar/*")
             }.start().use {
-                assertThat(get("/foo/bar/style.css").text).isEqualTo("body {}")
+                assertThat(local("/foo/bar/style.css").http.get().body).isEqualTo("body {}")
             }
     }
 
@@ -73,7 +73,7 @@ class HttpRoutingTest {
         HttpServer(4546)
             .get("/*") { _, res -> res.write("Hello") }
             .start().use {
-                assertThat(khttp.get("http://localhost:4546/").text).isEqualTo("Hello")
+                assertThat("http://localhost:4546/".http.get().body).isEqualTo("Hello")
             }
     }
 
@@ -86,19 +86,23 @@ class HttpRoutingTest {
                 }
             })
             .start().use {
-                assertThat(get("/foo").text).isEqualTo("Hello foo")
+                assertThat(local("/foo").http.get().body).isEqualTo("Hello foo")
             }
     }
 
     @Test
     fun `halt request`() {
         HttpServer()
-            .before { _, res -> halt(res, UNAUTHORIZED_401, "Go away") }
-            .get("/") { _, res -> res.status(OK_200) }
+            .before { _, res ->
+                halt(res, UNAUTHORIZED_401, "Go away")
+            }
+            .get("/") { _, res ->
+                res.status(OK_200)
+            }
             .start().use {
-                val response = get("/")
+                val response = local("/").http.get()
                 assertThat(response.statusCode).isEqualTo(UNAUTHORIZED_401)
-                assertThat(response.text).isEqualTo("Go away")
+                assertThat(response.body).isEqualTo("Go away")
             }
     }
 
@@ -114,10 +118,10 @@ class HttpRoutingTest {
             }
             .get("/f") { _, res -> res.write("f") }
             .start().use {
-                assertThat(get("/a/b").text).isEqualTo("ab")
-                assertThat(get("/a/c").text).isEqualTo("ac")
-                assertThat(get("/a/d/e").text).isEqualTo("ade")
-                assertThat(get("/f").text).isEqualTo("f")
+                assertThat(local("/a/b").http.get().body).isEqualTo("ab")
+                assertThat(local("/a/c").http.get().body).isEqualTo("ac")
+                assertThat(local("/a/d/e").http.get().body).isEqualTo("ade")
+                assertThat(local("/f").http.get().body).isEqualTo("f")
             }
     }
 
@@ -126,8 +130,8 @@ class HttpRoutingTest {
         HttpServer {
             get("/:foo") { req, res -> res.write("Hello ${req.param(":foo")}") }
         }.start().use {
-            assertThat(get("/a").text).isEqualTo("Hello a")
-            assertThat(get("/a/b").statusCode).isEqualTo(NOT_FOUND_404)
+            assertThat(local("/a").http.get().body).isEqualTo("Hello a")
+            assertThat(local("/a/b").http.get().statusCode).isEqualTo(NOT_FOUND_404)
         }
     }
 
@@ -137,8 +141,8 @@ class HttpRoutingTest {
             get("/foo") { _, _ -> throw RuntimeException() }
             get("/bar") { _, res -> res.write("Hello")}
         }.start().use {
-            assertThat(get("/foo").statusCode).isEqualTo(INTERNAL_SERVER_ERROR_500)
-            assertThat(get("/bar").text).isEqualTo("Hello")
+            assertThat(local("/foo").http.get().statusCode).isEqualTo(INTERNAL_SERVER_ERROR_500)
+            assertThat(local("/bar").http.get().body).isEqualTo("Hello")
         }
     }
 }

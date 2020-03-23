@@ -1,9 +1,9 @@
 package daikon
 
-import daikon.Localhost.get
-import org.assertj.core.api.Assertions.assertThat
 import daikon.core.HttpStatus.ACCEPTED_202
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import topinambur.http
 
 class HooksTest {
 
@@ -13,8 +13,8 @@ class HooksTest {
             .before("/") { _, res -> res.write("Hello") }
             .get("/") { _, res -> res.status(ACCEPTED_202)}
             .start().use {
-                val response = get("/")
-                assertThat(response.text).isEqualTo("Hello")
+                val response = local("/").http.get()
+                assertThat(response.body).isEqualTo("Hello")
                 assertThat(response.statusCode).isEqualTo(ACCEPTED_202)
             }
     }
@@ -25,8 +25,8 @@ class HooksTest {
             .get("/") { _, res -> res.write("Hello")}
             .after { _, res -> res.write(" world") }
             .start().use {
-                val response = get("/")
-                assertThat(response.text).isEqualTo("Hello world")
+                val response = local("/").http.get()
+                assertThat(response.body).isEqualTo("Hello world")
             }
     }
 
@@ -36,8 +36,8 @@ class HooksTest {
             .before { _, res -> res.write("Hello") }
             .get("/") { _, res -> res.write(" world")}
             .start().use {
-                val response = get("/")
-                assertThat(response.text).isEqualTo("Hello world")
+                val response = local("/").http.get()
+                assertThat(response.body).isEqualTo("Hello world")
             }
     }
 
@@ -49,8 +49,8 @@ class HooksTest {
             .before("/foo/bar") { _, res -> res.write("e") }
             .get("/*") { _, res -> res.write(" Bob")}
             .start().use {
-                val response = get("/foo/bar")
-                assertThat(response.text).isEqualTo("Bye Bob")
+                val response = local("/foo/bar").http.get()
+                assertThat(response.body).isEqualTo("Bye Bob")
             }
     }
 
@@ -62,8 +62,8 @@ class HooksTest {
             }
             .get("/baz/bar") { _, res -> res.write(" Bob") }
             .start().use {
-                val response = get("/baz/bar")
-                assertThat(response.text).isEqualTo("Hello Bob")
+                val response = local("/baz/bar").http.get()
+                assertThat(response.body).isEqualTo("Hello Bob")
             }
     }
 
@@ -75,8 +75,8 @@ class HooksTest {
             }
             .get("/baz/bar") { _, res -> res.write("Hello") }
             .start().use {
-                val response = get("/baz/bar")
-                assertThat(response.text).isEqualTo("Hello Bob")
+                val response = local("/baz/bar").http.get()
+                assertThat(response.body).isEqualTo("Hello Bob")
             }
     }
 
@@ -85,7 +85,7 @@ class HooksTest {
         var called = false
         HttpServer()
             .afterStart {
-                assertThat(get("/").text).isEqualTo("Hello")
+                assertThat(local("/").http.get().body).isEqualTo("Hello")
                 called = true
             }
             .get("/") { _, res -> res.write("Hello")}
@@ -100,7 +100,7 @@ class HooksTest {
         var called = false
         HttpServer()
             .beforeStop {
-                assertThat(get("/").text).isEqualTo("Hello")
+                assertThat(local("/").http.get().body).isEqualTo("Hello")
                 called = true
             }
             .get("/") { _, res -> res.write("Hello")}

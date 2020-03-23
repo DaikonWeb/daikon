@@ -1,11 +1,12 @@
 package daikon
 
-import daikon.Localhost.get
-import khttp.structures.authorization.BasicAuthorization
-import org.assertj.core.api.Assertions.assertThat
 import daikon.core.HttpStatus.OK_200
 import daikon.core.HttpStatus.UNAUTHORIZED_401
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import topinambur.http
+import java.nio.charset.StandardCharsets.UTF_8
+import java.util.*
 
 class BasicAuthenticationHttpTest {
 
@@ -17,10 +18,10 @@ class BasicAuthenticationHttpTest {
             .basicAuth("/bar*")
             .basicAuth("/baz/:name")
             .start().use {
-                assertThat(get("/").statusCode).isEqualTo(OK_200)
-                assertThat(get("/foo").statusCode).isEqualTo(UNAUTHORIZED_401)
-                assertThat(get("/bar/baz").statusCode).isEqualTo(UNAUTHORIZED_401)
-                assertThat(get("/baz/alex").statusCode).isEqualTo(UNAUTHORIZED_401)
+                assertThat(local("/").http.get().statusCode).isEqualTo(OK_200)
+                assertThat(local("/foo").http.get().statusCode).isEqualTo(UNAUTHORIZED_401)
+                assertThat(local("/bar/baz").http.get().statusCode).isEqualTo(UNAUTHORIZED_401)
+                assertThat(local("/baz/alex").http.get().statusCode).isEqualTo(UNAUTHORIZED_401)
             }
     }
 
@@ -31,8 +32,8 @@ class BasicAuthenticationHttpTest {
             .basicAuth("/")
             .get("/") { _, res -> res.status(OK_200)}
             .start().use {
-                assertThat(get("/").statusCode).isEqualTo(UNAUTHORIZED_401)
-                assertThat(get("/", auth = BasicAuthorization("Marco", "secret")).statusCode).isEqualTo(OK_200)
+                assertThat(local("/").http.get().statusCode).isEqualTo(UNAUTHORIZED_401)
+                assertThat(local("/").http.get(headers = basicAuth("Marco", "secret")).statusCode).isEqualTo(OK_200)
             }
     }
 
@@ -43,8 +44,8 @@ class BasicAuthenticationHttpTest {
             .basicAuth("/")
             .get("/") { _, res -> res.status(OK_200)}
             .start().use {
-                assertThat(get("/", auth = BasicAuthorization("Marco", "wrong")).statusCode).isEqualTo(UNAUTHORIZED_401)
-                assertThat(get("/", auth = BasicAuthorization("wrong", "secret")).statusCode).isEqualTo(UNAUTHORIZED_401)
+                assertThat(local("/").http.get(headers = basicAuth("Marco", "wrong")).statusCode).isEqualTo(UNAUTHORIZED_401)
+                assertThat(local("/").http.get(headers = basicAuth("wrong", "secret")).statusCode).isEqualTo(UNAUTHORIZED_401)
             }
     }
 
@@ -55,7 +56,12 @@ class BasicAuthenticationHttpTest {
             .basicAuth("/")
             .get("/") { _, res -> res.status(OK_200)}
             .start().use {
-                assertThat(get("/", auth = BasicAuthorization("ìù", "èéàò")).statusCode).isEqualTo(OK_200)
+                assertThat(local("/").http.get(headers = basicAuth("ìù", "èéàò")).statusCode).isEqualTo(OK_200)
             }
+    }
+
+    private fun basicAuth(user: String, password: String): Map<String, String> {
+        val base64 = String(Base64.getEncoder().encode("$user:$password".toByteArray()), UTF_8)
+        return mapOf("Authorization" to "Basic $base64")
     }
 }

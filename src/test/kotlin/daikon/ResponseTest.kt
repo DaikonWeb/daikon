@@ -1,10 +1,10 @@
 package daikon
 
-import daikon.Localhost.get
-import org.assertj.core.api.Assertions.assertThat
 import daikon.core.HttpStatus.CREATED_201
 import daikon.core.HttpStatus.MOVED_PERMANENTLY_301
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import topinambur.http
 
 class ResponseTest {
 
@@ -13,7 +13,7 @@ class ResponseTest {
         HttpServer()
             .any("/") { _, res -> res.status(CREATED_201) }
             .start().use {
-                assertThat(get("/").statusCode).isEqualTo(CREATED_201)
+                assertThat(local("/").http.get().statusCode).isEqualTo(CREATED_201)
             }
     }
 
@@ -22,7 +22,7 @@ class ResponseTest {
         HttpServer()
             .any("/") { _, res -> res.type("application/json") }
             .start().use {
-                assertThat(get("/").headers["Content-Type"]).isEqualTo("application/json")
+                assertThat(local("/").http.get().header("Content-Type")).isEqualTo("application/json")
             }
     }
 
@@ -31,7 +31,7 @@ class ResponseTest {
         HttpServer()
             .any("/") { _, res -> res.header("foo", "bar") }
             .start().use {
-                assertThat(get("/").headers["foo"]).isEqualTo("bar")
+               assertThat(local("/").http.get().headers["foo"]).isEqualTo("bar")
             }
     }
 
@@ -46,7 +46,7 @@ class ResponseTest {
                 body = res.body()
             }
             .start().use {
-                get("/")
+                local("/").http.get()
                 assertThat(body).isEqualTo("Hi Bob")
             }
     }
@@ -57,7 +57,7 @@ class ResponseTest {
             .any("/foo") { _, res -> res.redirect("/bar", MOVED_PERMANENTLY_301) }
             .any("/bar") { _, res -> res.write("Hello") }
             .start().use {
-                assertThat(get("/foo").text).isEqualTo("Hello")
+                assertThat(local("/foo").http.get().body).isEqualTo("Hello")
             }
     }
 
@@ -67,7 +67,7 @@ class ResponseTest {
             .any("/foo") { _, res -> res.redirect("http://localhost:4545/bar") }
             .any("/bar") { _, res -> res.write("Hello") }
             .start().use {
-                assertThat(get("/foo").text).isEqualTo("Hello")
+                assertThat(local("/foo").http.get().body).isEqualTo("Hello")
             }
     }
 }

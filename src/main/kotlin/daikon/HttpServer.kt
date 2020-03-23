@@ -1,7 +1,7 @@
 package daikon
 
-import daikon.core.Method.*
 import daikon.core.*
+import daikon.core.Method.*
 import org.eclipse.jetty.server.Server
 import org.eclipse.jetty.servlet.DefaultServlet
 import org.eclipse.jetty.servlet.ServletContextHandler
