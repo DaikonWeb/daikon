@@ -70,4 +70,13 @@ class ResponseTest {
                 assertThat(local("/foo").http.get().body).isEqualTo("Hello")
             }
     }
+
+    @Test
+    fun `override Server header`() {
+        HttpServer()
+            .any("/") { _, _ -> }
+            .start().use {
+                assertThat(local("/").http.get().header("Server")).isEqualTo("Daikon")
+            }
+    }
 }

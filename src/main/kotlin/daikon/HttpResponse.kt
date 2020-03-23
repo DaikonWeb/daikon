@@ -7,6 +7,9 @@ import javax.servlet.http.HttpServletResponse
 
 class HttpResponse(private val response: HttpServletResponse) : Response {
     private val writer = StringWriter()
+    init {
+        response.addHeader("Server", "Daikon")
+    }
 
     override fun header(name: String, value: String) {
         response.addHeader(name, value)
