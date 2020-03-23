@@ -21,7 +21,7 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter-engine:5.5.2"
     testImplementation "net.wuerl.kotlin:assertj-core-kotlin:0.2.1"
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0"
-    testImplementation "com.github.DaikonWeb:topinambur:1.1.3"
+    testImplementation "com.github.DaikonWeb:topinambur:1.2.3"
 }
 
 test {
