@@ -3,6 +3,8 @@ package daikon
 import daikon.core.Method
 import daikon.core.PathParams
 import daikon.core.Request
+import java.net.URLDecoder.decode
+import java.nio.charset.StandardCharsets.UTF_8
 import javax.servlet.http.HttpServletRequest
 
 class HttpRequest(private val request: HttpServletRequest) : Request {
@@ -48,6 +50,20 @@ class HttpRequest(private val request: HttpServletRequest) : Request {
     }
 
     override fun param(name: String): String {
-         return request.getParameter(name) ?: pathParams.valueOf(path()).getValue(name)
+         return getBodyParameter(name) ?: request.getParameter(name) ?: pathParams.valueOf(path()).getValue(name)
+    }
+
+    private fun getBodyParameter(name: String): String? {
+        if(body().isEmpty() || !hasHeader("Content-Type") || !header("Content-Type").startsWith("application/x-www-form-urlencoded")) {
+            return null
+        }
+        try {
+            return body().split("&").map {
+                val (key, value) = it.split("=")
+                key to decode(value, UTF_8.name())
+            }.toMap()[name]
+        }catch (t: Throwable) {
+            return null
+        }
     }
 }

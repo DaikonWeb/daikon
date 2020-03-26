@@ -37,6 +37,26 @@ class RequestTest {
     }
 
     @Test
+    fun `read param in post with empty body`() {
+        HttpServer()
+            .post("/:test") { req, res -> res.write(req.param(":test")) }
+            .start()
+            .use {
+                assertThat(local("/any").http.post().body).isEqualTo("any")
+            }
+    }
+
+    @Test
+    fun `can read post parameters and body`() {
+        HttpServer()
+            .post("/") { req, res -> res.write("""${req.body()} - ${req.param("name")}""") }
+            .start()
+            .use {
+                assertThat(local("/").http.post(data = mapOf("name" to "Bob")).body).isEqualTo("name=Bob - Bob")
+            }
+    }
+
+    @Test
     fun headers() {
         HttpServer()
             .post("/*") { req, res -> res.write("hello ${req.header("name")}") }
