@@ -13,12 +13,12 @@ fi
 DAIKON_ROOT="$(dirname $0)/.."
 SCRIPT_NAME="publish.sh"
 
-exclude_main_daikon() {
-    cat - | grep -v "./daikon/"
+include_only_daikon_extensions() {
+    cat - | grep "./daikon-\|./daikonweb"
 }
 
 extensions_scripts_folders() {
-    find ${DAIKON_ROOT}/.. -name "${SCRIPT_NAME}" | exclude_main_daikon | sed "s/${SCRIPT_NAME}$//"
+    find "${DAIKON_ROOT}/.." -name "${SCRIPT_NAME}" | include_only_daikon_extensions | sed "s/${SCRIPT_NAME}$//"
 }
 
 for folder in $(extensions_scripts_folders)
