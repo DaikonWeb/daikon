@@ -10,6 +10,7 @@ import org.eclipse.jetty.util.log.Log
 import org.eclipse.jetty.util.resource.Resource
 import java.time.LocalDateTime.now
 import java.time.temporal.ChronoUnit.MILLIS
+import kotlin.reflect.KClass
 
 
 class HttpServer(private val port: Int = 4545, initializeActions: HttpServer.() -> Unit = {}) : AutoCloseable {
@@ -19,6 +20,7 @@ class HttpServer(private val port: Int = 4545, initializeActions: HttpServer.() 
     private val afterActions = Routing()
     private val afterStartActions = mutableListOf<(Context) -> Unit>()
     private val beforeStopActions = mutableListOf<(Context) -> Unit>()
+    private val exceptions = mutableListOf<ExceptionRoute>()
     private val basePath = mutableListOf("")
     private val context = ServerContext(port)
     private val basicAuth = BasicAuthentication()
@@ -34,7 +36,7 @@ class HttpServer(private val port: Int = 4545, initializeActions: HttpServer.() 
     fun start(): HttpServer {
         val beginStarting = now()
         server = Server(port)
-        handler.addServlet(ServletHolder(RoutingServlet(beforeActions, routes, afterActions, context)), "/*")
+        handler.addServlet(ServletHolder(RoutingServlet(beforeActions, routes, afterActions, context, exceptions)), "/*")
         server.handler = handler
         server.start()
         val endStarting = now()
@@ -48,110 +50,58 @@ class HttpServer(private val port: Int = 4545, initializeActions: HttpServer.() 
         server.stop()
     }
 
-    fun get(path: String, action: (Request, Response) -> Unit): HttpServer {
-        get(path, DummyRouteAction(action))
+    fun exception(exception: Class<out Throwable>, action: (Request, Response, Context) -> Unit)
+            = exception(exception, ContextRouteAction(action))
+
+    fun exception(exception: Class<out Throwable>, action: (Request, Response) -> Unit)
+            = exception(exception, DummyRouteAction(action))
+
+    fun exception(exception: Class<out Throwable>, action: RouteAction): HttpServer {
+        exceptions.add(ExceptionRoute(exception, action))
         return this
     }
 
-    fun get(path: String, action: (Request, Response, Context) -> Unit): HttpServer {
-        get(path, ContextRouteAction(action))
-        return this
-    }
+    fun get(path: String, action: (Request, Response) -> Unit) = get(path, DummyRouteAction(action))
 
-    fun get(path: String, action: RouteAction): HttpServer {
-        add(GET, path, action)
-        return this
-    }
+    fun get(path: String, action: (Request, Response, Context) -> Unit) = get(path, ContextRouteAction(action))
 
-    fun post(path: String, action: (Request, Response) -> Unit): HttpServer {
-        post(path, DummyRouteAction(action))
-        return this
-    }
+    fun get(path: String, action: RouteAction) = add(GET, path, action)
 
-    fun post(path: String, action: (Request, Response, Context) -> Unit): HttpServer {
-        post(path, ContextRouteAction(action))
-        return this
-    }
+    fun post(path: String, action: (Request, Response) -> Unit) = post(path, DummyRouteAction(action))
 
-    fun post(path: String, action: RouteAction): HttpServer {
-        add(POST, path, action)
-        return this
-    }
+    fun post(path: String, action: (Request, Response, Context) -> Unit) = post(path, ContextRouteAction(action))
 
-    fun put(path: String, action: (Request, Response) -> Unit): HttpServer {
-        put(path, DummyRouteAction(action))
-        return this
-    }
+    fun post(path: String, action: RouteAction) = add(POST, path, action)
 
-    fun put(path: String, action: (Request, Response, Context) -> Unit): HttpServer {
-        put(path, ContextRouteAction(action))
-        return this
-    }
+    fun put(path: String, action: (Request, Response) -> Unit) = put(path, DummyRouteAction(action))
 
-    fun put(path: String, action: RouteAction): HttpServer {
-        add(PUT, path, action)
-        return this
-    }
+    fun put(path: String, action: (Request, Response, Context) -> Unit) = put(path, ContextRouteAction(action))
 
-    fun delete(path: String, action: (Request, Response) -> Unit): HttpServer {
-        delete(path, DummyRouteAction(action))
-        return this
-    }
+    fun put(path: String, action: RouteAction) = add(PUT, path, action)
 
-    fun delete(path: String, action: (Request, Response, Context) -> Unit): HttpServer {
-        delete(path, ContextRouteAction(action))
-        return this
-    }
+    fun delete(path: String, action: (Request, Response) -> Unit) = delete(path, DummyRouteAction(action))
 
-    fun delete(path: String, action: RouteAction): HttpServer {
-        add(DELETE, path, action)
-        return this
-    }
+    fun delete(path: String, action: (Request, Response, Context) -> Unit) = delete(path, ContextRouteAction(action))
 
-    fun options(path: String, action: (Request, Response) -> Unit): HttpServer {
-        options(path, DummyRouteAction(action))
-        return this
-    }
+    fun delete(path: String, action: RouteAction) = add(DELETE, path, action)
 
-    fun options(path: String, action: (Request, Response, Context) -> Unit): HttpServer {
-        options(path, ContextRouteAction(action))
-        return this
-    }
+    fun options(path: String, action: (Request, Response) -> Unit) = options(path, DummyRouteAction(action))
 
-    fun options(path: String, action: RouteAction): HttpServer {
-        add(OPTIONS, path, action)
-        return this
-    }
+    fun options(path: String, action: (Request, Response, Context) -> Unit) = options(path, ContextRouteAction(action))
 
-    fun head(path: String, action: (Request, Response) -> Unit): HttpServer {
-        head(path, DummyRouteAction(action))
-        return this
-    }
+    fun options(path: String, action: RouteAction) = add(OPTIONS, path, action)
 
-    fun head(path: String, action: (Request, Response, Context) -> Unit): HttpServer {
-        head(path, ContextRouteAction(action))
-        return this
-    }
+    fun head(path: String, action: (Request, Response) -> Unit) = head(path, DummyRouteAction(action))
 
-    fun head(path: String, action: RouteAction): HttpServer {
-        add(HEAD, path, action)
-        return this
-    }
+    fun head(path: String, action: (Request, Response, Context) -> Unit) = head(path, ContextRouteAction(action))
 
-    fun any(path: String, action: (Request, Response) -> Unit): HttpServer {
-        any(path, DummyRouteAction(action))
-        return this
-    }
+    fun head(path: String, action: RouteAction) = add(HEAD, path, action)
 
-    fun any(path: String, action: (Request, Response, Context) -> Unit): HttpServer {
-        any(path, ContextRouteAction(action))
-        return this
-    }
+    fun any(path: String, action: (Request, Response) -> Unit) = any(path, DummyRouteAction(action))
 
-    fun any(path: String, action: RouteAction): HttpServer {
-        add(ANY, path, action)
-        return this
-    }
+    fun any(path: String, action: (Request, Response, Context) -> Unit) = any(path, ContextRouteAction(action))
+
+    fun any(path: String, action: RouteAction) = add(ANY, path, action)
 
     fun before(path: String = "/*", action: (Request, Response) -> Unit): HttpServer {
         beforeActions.add(Route(ANY, joinPaths(path), DummyRouteAction(action)))
@@ -207,8 +157,9 @@ class HttpServer(private val port: Int = 4545, initializeActions: HttpServer.() 
         return this
     }
 
-    private fun add(method: Method, path: String, action: RouteAction) {
+    private fun add(method: Method, path: String, action: RouteAction): HttpServer {
         routes.add(Route(method, joinPaths(path), action))
+        return this
     }
 
     private fun joinPaths(path: String) = basePath.joinToString(separator = "") + path
