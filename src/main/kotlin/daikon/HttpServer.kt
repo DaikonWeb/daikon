@@ -20,7 +20,7 @@ class HttpServer(private val port: Int = 4545, initializeActions: HttpServer.() 
     private val afterActions = Routing()
     private val afterStartActions = mutableListOf<(Context) -> Unit>()
     private val beforeStopActions = mutableListOf<(Context) -> Unit>()
-    private val exceptions = mutableListOf<ExceptionRoute>()
+    private val exceptions = Exceptions()
     private val basePath = mutableListOf("")
     private val context = ServerContext(port)
     private val basicAuth = BasicAuthentication()
@@ -50,13 +50,13 @@ class HttpServer(private val port: Int = 4545, initializeActions: HttpServer.() 
         server.stop()
     }
 
-    fun exception(exception: Class<out Throwable>, action: (Request, Response, Context) -> Unit)
-            = exception(exception, ContextRouteAction(action))
+    fun exception(exception: Class<out Throwable>, action: (Request, Response, Context, Throwable) -> Unit)
+            = exception(exception, ContextExceptionAction(action))
 
-    fun exception(exception: Class<out Throwable>, action: (Request, Response) -> Unit)
-            = exception(exception, DummyRouteAction(action))
+    fun exception(exception: Class<out Throwable>, action: (Request, Response, Throwable) -> Unit)
+            = exception(exception, DummyExceptionAction(action))
 
-    fun exception(exception: Class<out Throwable>, action: RouteAction): HttpServer {
+    fun exception(exception: Class<out Throwable>, action: ExceptionAction): HttpServer {
         exceptions.add(ExceptionRoute(exception, action))
         return this
     }
