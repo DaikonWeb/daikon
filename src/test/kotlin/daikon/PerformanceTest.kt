@@ -82,7 +82,7 @@ class PerformanceTest {
         println("#${measures.size} average: ${measures.average()} - min: ${measures.min()} - max: ${measures.max()}")
     }
 
-    private fun startServer(): HttpServer {
+    private fun startServer(): DaikonServer {
         return HttpServer()
             .get("/") { req, res -> res.write("Hello ${req.param("a")}") }
             .start()

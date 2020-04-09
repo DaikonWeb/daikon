@@ -1,16 +1,13 @@
 package daikon
 
+import daikon.core.HttpStatus.UNAUTHORIZED_401
 import daikon.core.Request
 import daikon.core.RequestFlow.halt
 import daikon.core.Response
-import org.eclipse.jetty.http.HttpHeader.AUTHORIZATION
-import org.eclipse.jetty.http.HttpHeader.WWW_AUTHENTICATE
 import java.nio.charset.StandardCharsets.UTF_8
 import java.util.*
-import javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED
 
 class BasicAuthentication {
-
     private val credentials = mutableListOf<Credential>()
 
     fun addUser(username: String, password: String) {
@@ -19,7 +16,7 @@ class BasicAuthentication {
 
     fun validate(req: Request, res: Response, realm: String) {
         try {
-            val credential = credential(req.header(AUTHORIZATION.asString()))
+            val credential = credential(req.header("Authorization"))
 
             if (isForbidden(credential)) {
                 unauthorized(res, realm)
@@ -31,11 +28,8 @@ class BasicAuthentication {
     }
 
     private fun unauthorized(res: Response, realm: String) {
-        res.header(
-            WWW_AUTHENTICATE.asString(),
-            """Basic realm="$realm", charset="UTF-8""""
-        )
-        halt(res, SC_UNAUTHORIZED)
+        res.header("WWW-Authenticate", """Basic realm="$realm", charset="UTF-8"""")
+        halt(res, UNAUTHORIZED_401)
     }
 
     private fun isForbidden(credential: Credential): Boolean {
