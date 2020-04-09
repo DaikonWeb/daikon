@@ -23,4 +23,4 @@ jobs:
     - name: Publish on JitPack
       env:
         GITHUB_REF: ${{ github.ref }}
-      run: curl "https://jitpack.io/api/builds/com.github.DaikonWeb/daikon/${GITHUB_REF##*/}"
+      run: sleep 60 && curl "https://jitpack.io/api/builds/com.github.DaikonWeb/daikon/${GITHUB_REF##*/}"
