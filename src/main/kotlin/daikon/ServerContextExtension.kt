@@ -2,6 +2,6 @@ package daikon
 
 import daikon.core.Context
 
-fun Context.port() {
+fun Context.port(): Int {
     return getAttribute("port")
 }
