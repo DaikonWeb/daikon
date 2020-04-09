@@ -12,16 +12,16 @@ dependencies {
     implementation platform('org.jetbrains.kotlin:kotlin-bom')
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
 
-    compile "org.eclipse.jetty:jetty-server:9.4.27.v20200227"
-    compile "org.eclipse.jetty:jetty-servlet:9.4.27.v20200227"
-    compile "com.github.DaikonWeb:daikon-core:1.2.0"
+    compile 'org.eclipse.jetty:jetty-server:9.4.27.v20200227'
+    compile 'org.eclipse.jetty:jetty-servlet:9.4.27.v20200227'
+    compile 'com.github.DaikonWeb:daikon-core:1.3.0'
 
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.2"
-    testImplementation "org.junit.jupiter:junit-jupiter-api:5.5.2"
-    testImplementation "org.junit.jupiter:junit-jupiter-engine:5.5.2"
-    testImplementation "net.wuerl.kotlin:assertj-core-kotlin:0.2.1"
-    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0"
-    testImplementation "com.github.DaikonWeb:topinambur:1.2.3"
+    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.5.2'
+    testImplementation 'net.wuerl.kotlin:assertj-core-kotlin:0.2.1'
+    testImplementation 'com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0'
+    testImplementation 'com.github.DaikonWeb:topinambur:1.2.3'
 }
 
 test {
