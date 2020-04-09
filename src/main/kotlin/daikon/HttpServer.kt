@@ -1,5 +1,6 @@
 package daikon
 
+import daikon.core.DaikonServer
 import daikon.core.RoutingHandler
 import org.eclipse.jetty.server.Server
 import org.eclipse.jetty.servlet.DefaultServlet
@@ -11,7 +12,7 @@ import java.time.LocalDateTime.now
 import java.time.temporal.ChronoUnit.MILLIS
 
 
-class HttpServer(private val port: Int = 4545, initializeActions: DaikonServer.() -> Unit = {}): DaikonServer(port, initializeActions) {
+class HttpServer(private val port: Int = 4545, initializeActions: DaikonServer.() -> Unit = {}): DaikonServer(initializeActions) {
     init {
         disableJettyLog()
     }
@@ -22,6 +23,7 @@ class HttpServer(private val port: Int = 4545, initializeActions: DaikonServer.(
     override fun start(routingHandler: RoutingHandler): HttpServer {
         val beginStarting = now()
         server = Server(port)
+        context.addAttribute("port", port)
         handler.addServlet(ServletHolder(RoutingServlet(routingHandler)), "/*")
         server.handler = handler
         server.start()
