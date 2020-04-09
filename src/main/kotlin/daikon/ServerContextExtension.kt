@@ -1,7 +1,7 @@
 package daikon
 
-import daikon.core.ServerContext
+import daikon.core.Context
 
-fun ServerContext.port() {
+fun Context.port() {
     return getAttribute("port")
 }
