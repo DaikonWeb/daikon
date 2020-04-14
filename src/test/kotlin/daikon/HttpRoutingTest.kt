@@ -42,17 +42,9 @@ class HttpRoutingTest {
     fun `serve static files`() {
         HttpServer()
             .assets("/foo/*")
-            .start().use {
-                assertThat(local("/foo/style.css").http.get().body).isEqualTo("body {}")
-            }
-    }
-
-    @Test
-    fun `mix of static file and dynamic routes`() {
-        HttpServer()
-            .assets("/foo/*")
             .get("/bar/2") { _, res -> res.write("Hello") }
             .start().use {
+                assertThat(local("/foo/style.css").http.get().header("Content-Type")).isEqualTo("text/css")
                 assertThat(local("/foo/style.css").http.get().body).isEqualTo("body {}")
                 assertThat(local("/bar/2").http.get().body).isEqualTo("Hello")
             }
