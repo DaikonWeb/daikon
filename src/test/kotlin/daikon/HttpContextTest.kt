@@ -10,7 +10,7 @@ class HttpContextTest {
     fun `context preserve attributes`() {
         HttpServer()
             .afterStart { ctx -> ctx.addAttribute("key", "value") }
-            .get("/") { _, res, ctx -> res.write(ctx.getAttribute("key")) }
+            .get("/") { _, res, ctx -> res.write(ctx.getAttribute<String>("key")) }
             .start().use {
                 assertThat(local("/").http.get().body).isEqualTo("value")
             }

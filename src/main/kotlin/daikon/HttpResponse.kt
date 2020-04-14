@@ -34,7 +34,10 @@ class HttpResponse(private val response: HttpServletResponse) : Response {
 
     override fun write(text: String) {
         writer.write(text)
-        response.characterEncoding = UTF_8.name()
-        response.writer.write(text)
+        write(text.toByteArray(UTF_8))
+    }
+
+    override fun write(byteArray: ByteArray) {
+        response.outputStream.write(byteArray)
     }
 }

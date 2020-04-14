@@ -158,7 +158,7 @@ class RequestTest {
     fun attribute() {
         HttpServer()
             .before("/") { req, _ -> req.attribute("foo_key", "foo_value") }
-            .get("/") { req, res -> res.write(req.attribute("foo_key")) }
+            .get("/") { req, res -> res.write(req.attribute<String>("foo_key")) }
             .start().use {
                 assertThat(local("/").http.get().body).isEqualTo("foo_value")
             }

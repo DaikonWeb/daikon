@@ -13,6 +13,7 @@ import daikon.core.RouteAction
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import topinambur.http
+import java.nio.file.Path
 
 class HttpRoutingTest {
 
@@ -41,8 +42,8 @@ class HttpRoutingTest {
     @Test
     fun `serve static files`() {
         HttpServer()
-            .assets("/foo/*")
             .get("/bar/2") { _, res -> res.write("Hello") }
+            .assets("/foo/*")
             .start().use {
                 assertThat(local("/foo/style.css").http.get().header("Content-Type")).isEqualTo("text/css")
                 assertThat(local("/foo/style.css").http.get().body).isEqualTo("body {}")
