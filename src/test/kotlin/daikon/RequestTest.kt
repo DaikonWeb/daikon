@@ -8,7 +8,7 @@ import topinambur.http
 class RequestTest {
 
     @Test
-    fun `query string parameter`() {
+    fun `has parameter`() {
         HttpServer()
             .get("/") { req, _ ->
                 assertThat(req.hasParam("name")).isTrue()
@@ -20,7 +20,7 @@ class RequestTest {
     }
 
     @Test
-    fun `has parameter`() {
+    fun `query string parameter`() {
         HttpServer()
             .get("/") { req, res -> res.write("hello ${req.param("name")}") }
             .start().use {
