@@ -21,37 +21,27 @@ class HttpRequest(private val request: HttpServletRequest) : Request {
         return request.getAttribute(key)!! as T
     }
 
-    override fun method(): Method {
-        return Method.valueOf(request.method)
-    }
+    override fun hasAttribute(key: String) = request.attributeNames.toList().contains(key)
 
-    override fun <T> attribute(key: String, value: T) {
-        request.setAttribute(key, value)
-    }
+    override fun method() = Method.valueOf(request.method)
 
-    override fun path(): String {
-        return request.requestURI
-    }
+    override fun <T> attribute(key: String, value: T) = request.setAttribute(key, value)
 
-    override fun url(): String {
-        return request.requestURL.toString()
-    }
+    override fun path(): String = request.requestURI
 
-    override fun body(): String {
-        return body
-    }
+    override fun url() = request.requestURL.toString()
 
-    override fun header(name: String): String {
-        return request.getHeader(name)
-    }
+    override fun body() = body
 
-    override fun hasHeader(name: String): Boolean {
-        return request.headerNames.toList().contains(name)
-    }
+    override fun header(name: String): String = request.getHeader(name)
+
+    override fun hasHeader(name: String) = request.headerNames.toList().contains(name)
 
     override fun param(name: String): String {
          return getBodyParameter(name) ?: request.getParameter(name) ?: pathParams.valueOf(path()).getValue(name)
     }
+
+    override fun hasParam(name: String) = try { param(name); true } catch (t: Throwable) { false }
 
     private fun getBodyParameter(name: String): String? {
         if(body().isEmpty() || !hasHeader("Content-Type") || !header("Content-Type").startsWith("application/x-www-form-urlencoded")) {

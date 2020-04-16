@@ -10,6 +10,18 @@ class RequestTest {
     @Test
     fun `query string parameter`() {
         HttpServer()
+            .get("/") { req, _ ->
+                assertThat(req.hasParam("name")).isTrue()
+                assertThat(req.hasParam("age")).isFalse()
+            }
+            .start().use {
+                local("/?name=Bob").http.get()
+            }
+    }
+
+    @Test
+    fun `has parameter`() {
+        HttpServer()
             .get("/") { req, res -> res.write("hello ${req.param("name")}") }
             .start().use {
                 assertThat(local("/?name=Bob").http.get().body).isEqualTo("hello Bob")
@@ -79,14 +91,13 @@ class RequestTest {
     @Test
     fun `check if an header is present`() {
         HttpServer()
-            .post("/*") { req, res ->
-                val name = if (req.hasHeader("name")) req.header("name") else "World"
-                res.write("Hello $name")
+            .post("/*") { req, _ ->
+                assertThat(req.hasHeader("name")).isTrue()
+                assertThat(req.hasHeader("age")).isFalse()
             }
             .start()
             .use {
-                assertThat(local("/").http.post().body).isEqualTo("Hello World")
-                assertThat(local("/").http.post(headers = mapOf("name" to "Bob")).body).isEqualTo("Hello Bob")
+                local("/").http.post(headers = mapOf("name" to "Bob"))
             }
     }
 
@@ -161,6 +172,19 @@ class RequestTest {
             .get("/") { req, res -> res.write(req.attribute<String>("foo_key")) }
             .start().use {
                 assertThat(local("/").http.get().body).isEqualTo("foo_value")
+            }
+    }
+
+    @Test
+    fun `has attribute`() {
+        HttpServer()
+            .before("/") { req, _ -> req.attribute("foo", "any") }
+            .get("/") { req, _ ->
+                assertThat(req.hasAttribute("foo")).isTrue()
+                assertThat(req.hasAttribute("bar")).isFalse()
+            }
+            .start().use {
+                local("/").http.get()
             }
     }
 
