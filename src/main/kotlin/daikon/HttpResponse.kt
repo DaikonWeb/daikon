@@ -28,9 +28,13 @@ class HttpResponse(private val response: HttpServletResponse) : Response {
        response.contentType = contentType
     }
 
+    override fun type() = response.contentType
+
     override fun status(code: Int) {
         response.status = code
     }
+
+    override fun status() = response.status
 
     override fun write(text: String) {
         writer.write(text)

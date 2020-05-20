@@ -2,6 +2,7 @@ package daikon
 
 import daikon.core.HttpStatus.CREATED_201
 import daikon.core.HttpStatus.MOVED_PERMANENTLY_301
+import daikon.core.HttpStatus.NOT_FOUND_404
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import topinambur.http
@@ -77,6 +78,26 @@ class ResponseTest {
             .any("/") { _, _ -> }
             .start().use {
                 assertThat(local("/").http.get().header("Server")).isEqualTo("Daikon")
+            }
+    }
+
+    @Test
+    fun `can access to response status code`() {
+        HttpServer()
+            .any("/") { _, res -> res.status(NOT_FOUND_404)}
+            .after("/") { _, res -> res.write("StatusCode = ${res.status()}")}
+            .start().use {
+                assertThat(local("/").http.get().body).isEqualTo("StatusCode = 404")
+            }
+    }
+
+    @Test
+    fun `can access to response type`() {
+        HttpServer()
+            .any("/") { _, res -> res.type("application/json")}
+            .after("/") { _, res -> res.write("Type = ${res.type()}")}
+            .start().use {
+                assertThat(local("/").http.get().body).isEqualTo("Type = application/json")
             }
     }
 }
