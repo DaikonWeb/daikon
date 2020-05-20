@@ -29,7 +29,7 @@ class HttpRequest(private val request: HttpServletRequest) : Request {
 
     override fun path(): String = request.requestURI
 
-    override fun url() = request.requestURL.toString()
+    override fun url() = request.requestURL.toString() + if(request.queryString.isNullOrEmpty()) "" else "?${request.queryString}"
 
     override fun body() = body
 

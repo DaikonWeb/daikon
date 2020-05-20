@@ -157,6 +157,15 @@ class RequestTest {
     }
 
     @Test
+    fun `request url with querystring`() {
+        HttpServer()
+                .get("/test") { req, res -> res.write(req.url()) }
+                .start().use {
+                    assertThat(local("/test?name=Bob&surname=Marley").http.get().body).isEqualTo("http://localhost:4545/test?name=Bob&surname=Marley")
+                }
+    }
+
+    @Test
     fun `request path`() {
         HttpServer()
             .get("/:foo") { req, res -> res.write(req.path()) }
