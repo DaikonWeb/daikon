@@ -4,11 +4,12 @@ import daikon.core.Method
 import daikon.core.PathParams
 import daikon.core.Request
 import java.net.URLDecoder.decode
+import java.nio.charset.StandardCharsets
 import java.nio.charset.StandardCharsets.UTF_8
 import javax.servlet.http.HttpServletRequest
 
 class HttpRequest(private val request: HttpServletRequest) : Request {
-    private val body by lazy { request.reader.readText() }
+    private val body by lazy { request.inputStream.readBytes() }
     private lateinit var pathParams: PathParams
 
     override fun withPathParams(value: String): HttpRequest {
@@ -31,7 +32,7 @@ class HttpRequest(private val request: HttpServletRequest) : Request {
 
     override fun url() = request.requestURL.toString() + if(request.queryString.isNullOrEmpty()) "" else "?${request.queryString}"
 
-    override fun body() = body
+    override fun body() = body.toString(UTF_8)
 
     override fun header(name: String): String = request.getHeader(name)
 

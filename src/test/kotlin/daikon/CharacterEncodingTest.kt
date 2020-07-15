@@ -46,6 +46,16 @@ class CharacterEncodingTest {
     }
 
     @Test
+    fun `post body supports utf8`() {
+        HttpServer()
+            .post("/") { req, res -> res.write(req.body()) }
+            .start().use {
+                val response = local("/").http.post(body = "è$&")
+                assertThat(response.body).isEqualTo("è$&")
+            }
+    }
+
+    @Test
     fun `header does not supports utf8`() {
         HttpServer()
             .get("/") { req, res -> res.write(req.header("name")) }
