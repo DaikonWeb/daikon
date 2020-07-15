@@ -23,7 +23,7 @@ repositories {
 
 - Add the dependency
 ```
-implementation 'com.github.DaikonWeb:daikon:1.7.0'
+implementation 'com.github.DaikonWeb:daikon:1.7.1'
 ```
 
 ### Maven
@@ -41,7 +41,7 @@ implementation 'com.github.DaikonWeb:daikon:1.7.0'
 <dependency>
     <groupId>com.github.DaikonWeb</groupId>
     <artifactId>daikon</artifactId>
-    <version>1.7.0</version>
+    <version>1.7.1</version>
 </dependency>
 ```
 
