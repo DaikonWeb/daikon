@@ -14,7 +14,7 @@ dependencies {
 
     compile 'org.eclipse.jetty:jetty-server:9.4.27.v20200227'
     compile 'org.eclipse.jetty:jetty-servlet:9.4.27.v20200227'
-    compile 'com.github.DaikonWeb:daikon-core:1.3.4'
+    compile 'com.github.DaikonWeb:daikon-core:1.4.0'
 
     testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.2'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.2'
