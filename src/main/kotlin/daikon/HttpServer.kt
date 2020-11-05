@@ -8,6 +8,7 @@ import org.eclipse.jetty.servlet.ServletHolder
 import org.eclipse.jetty.util.log.Log
 import java.time.LocalDateTime.now
 import java.time.temporal.ChronoUnit.MILLIS
+import javax.servlet.MultipartConfigElement
 
 
 class HttpServer(private val port: Int = 4545, initializeActions: DaikonServer.() -> Unit = {}): DaikonServer(initializeActions) {
@@ -22,7 +23,9 @@ class HttpServer(private val port: Int = 4545, initializeActions: DaikonServer.(
         val beginStarting = now()
         server = Server(port)
         context.addAttribute("port", port)
-        handler.addServlet(ServletHolder(RoutingServlet(routingHandler)), "/*")
+        val servletHolder = ServletHolder(RoutingServlet(routingHandler))
+        servletHolder.registration.setMultipartConfig(MultipartConfigElement("/tmp"))
+        handler.addServlet(servletHolder, "/*")
         server.handler = handler
         server.start()
         val endStarting = now()

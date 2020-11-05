@@ -1,8 +1,11 @@
 package daikon
 
 import daikon.core.HttpStatus.INTERNAL_SERVER_ERROR_500
+import daikon.core.Request
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import topinambur.FieldPart
+import topinambur.FilePart
 import topinambur.http
 
 class RequestTest {
@@ -213,6 +216,46 @@ class RequestTest {
             .start()
             .use {
                 assertThat(local("/").http.post().body).isEqualTo("POST")
+            }
+    }
+
+    @Test
+    fun `receive a file`() {
+        HttpServer()
+            .post("/*") { req: Request, res ->
+                val file = req.multipart("firstData")
+
+                res.write(file.content)
+            }
+            .start()
+            .use {
+                val response = local("/").http.post(
+                        data = mapOf("firstData" to FilePart("file", "txt", "testo da convertire".toByteArray()))
+                )
+
+                assertThat(response.body).isEqualTo("testo da convertire")
+            }
+    }
+
+    @Test
+    fun `receive a file and a field`() {
+        HttpServer()
+            .post("/*") { req: Request, res ->
+                val file = req.multipart("firstData")
+                val field = req.multipart("secondData")
+
+                res.write("""${file.content.toString(Charsets.UTF_8)} | ${field.content.toString(Charsets.UTF_8)}""")
+            }
+            .start()
+            .use {
+                val response = local("/").http.post(
+                        data = mapOf(
+                            "firstData" to FilePart("file", "txt", "testo da convertire".toByteArray()),
+                            "secondData" to FieldPart("valore")
+                        )
+                )
+
+                assertThat(response.body).isEqualTo("testo da convertire | valore")
             }
     }
 }
